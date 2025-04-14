@@ -142,7 +142,8 @@
     micro
     nixfmt
     brave
-
+    xdg-desktop-portal
+    xdg-desktop-portal-gtk # For GTK apps, like GNOME/KDE portals
     # window manager
     st
     sxhkd
@@ -156,8 +157,10 @@
     wmname
     python310
     discord
+    slack
     vscode
     neovim
+    alacritty
   ];
 
   # Some programs need SUID wrappers, can be configured further or are
