@@ -45,9 +45,26 @@
   # Enable the X11 windowing system
   services.xserver = {
     enable = true;
-    # Enable the GNOME Desktop Environment.
-    displayManager.gdm.enable = true;
-    desktopManager.gnome.enable = true;
+
+    displayManager = {
+      lightdm.enable = true;
+      defaultSession = "xfce+i3"; 	
+    };
+
+    desktopManager = {
+    	xterm.enable = false;
+    	xfce = {
+    		enable = true;
+    		noDesktop = true;
+    		enableXfwm = false;
+    	};
+    };
+
+    windowManager.i3 = {
+      enable = true;
+      package = pkgs.i3-gaps;
+      extraPackages = with pkgs; [ dmenu i3status i3lock polybar ];
+    };
     # Configure keymap in X11
     xkb = {
       layout = "us";
@@ -120,8 +137,21 @@
     wget
     micro
     nixfmt
-    # kitty
     brave
+
+    # window manager
+    st
+    sxhkd
+    termite
+    picom
+    neofetch
+    feh
+    mpv
+    ffmpeg
+    wmctrl
+    wmname
+    python310
+
   ];
 
   # Some programs need SUID wrappers, can be configured further or are
