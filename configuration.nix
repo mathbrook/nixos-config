@@ -43,37 +43,45 @@
   };
 
   # Enable the X11 windowing system
-  services.xserver = {
-    enable = true;
-
-    displayManager = {
-      lightdm.enable = true;
-      defaultSession = "xfce+i3"; 	
-    };
-
-    desktopManager = {
-    	xterm.enable = false;
-    	xfce = {
-    		enable = true;
-    		noDesktop = true;
-    		enableXfwm = false;
-    	};
-    };
-
-    windowManager.i3 = {
+  services = {
+    xserver = {
       enable = true;
-      package = pkgs.i3-gaps;
-      extraPackages = with pkgs; [ dmenu i3status i3lock polybar ];
-    };
-    # Configure keymap in X11
-    xkb = {
-      layout = "us";
-      variant = "";
-    };
-  };
 
-  # Enable CUPS to print documents.
-  services.printing.enable = true;
+      displayManager = {
+        lightdm.enable = true;
+        defaultSession = "xfce+i3";
+        autoLogin = {
+          enable = true;
+          user = "matty";
+        };
+      };
+
+      desktopManager = {
+        xterm.enable = false;
+        xfce = {
+          enable = true;
+          noDesktop = true;
+          enableXfwm = false;
+        };
+      };
+
+      windowManager.i3 = {
+        enable = true;
+        package = pkgs.i3-gaps;
+        extraPackages = with pkgs; [ dmenu i3status i3lock polybar ];
+      };
+      # Configure keymap in X11
+      xkb = {
+        layout = "us";
+        variant = "";
+      };
+    };
+    # Add picom to do transparency in i3 i hope lmao
+    # picom.enable = true;
+
+    # Enable CUPS to print documents.
+    printing.enable = true;
+  };
 
   # Enable sound with pipewire.
   hardware.pulseaudio.enable = false;
@@ -104,10 +112,6 @@
         #  thunderbird
       ];
   };
-
-  # Enable automatic login for the user.
-  services.xserver.displayManager.autoLogin.enable = true;
-  services.xserver.displayManager.autoLogin.user = "matty";
 
   # Workaround for GNOME autologin: https://github.com/NixOS/nixpkgs/issues/103746#issuecomment-945091229
   systemd.services."getty@tty1".enable = false;
@@ -151,7 +155,9 @@
     wmctrl
     wmname
     python310
-
+    discord
+    vscode
+    neovim
   ];
 
   # Some programs need SUID wrappers, can be configured further or are
