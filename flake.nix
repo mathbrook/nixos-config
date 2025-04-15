@@ -24,6 +24,13 @@
         ./modules/common.nix
       ];
       };
+      virtualbox-lg = nixpkgs.lib.nixosSystem {
+        system = "x86_64-linux";
+        modules = [
+        ./virtualbox-lg/configuration.nix
+        ./modules/common.nix
+      ];
+      };
     };
   };
 }
