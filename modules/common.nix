@@ -2,9 +2,12 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
-{ config, pkgs, ... }:
+{ config, lib, pkgs, ... }:
 
 {
+  imports = [
+    ./terminal/kitty.nix
+  ];
   # Enable networking
   networking.networkmanager.enable = true;
   # Set your time zone.
@@ -101,7 +104,7 @@
 
   # Install firefox.
   # programs.hyprland.enable = true;
-  programs.firefox.enable = true;
+  programs.firefox.enable = false;
   programs.git = {
     enable = true;
     config = {
@@ -123,6 +126,14 @@
     "nix-command"
     "flakes"
   ];
+    # do garbage collection weekly to keep disk usage low
+  nix.gc = {
+    automatic = lib.mkDefault true;
+    dates = lib.mkDefault "weekly";
+    options = lib.mkDefault "--delete-older-than 7d";
+  };
+  nix.settings.auto-optimise-store = true;
+  nix.channel.enable = false; # remove nix-channel related tools & configs, we use flakes instead.
 
   environment.systemPackages = with pkgs; [
     #  vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
@@ -132,6 +143,8 @@
     brave
     xdg-desktop-portal
     xdg-desktop-portal-gtk # For GTK apps, like GNOME/KDE portals
+    spotify
+
     # window manager
     st
     sxhkd
@@ -149,5 +162,6 @@
     vscode
     neovim
     alacritty
+    kitty
   ];
 }
