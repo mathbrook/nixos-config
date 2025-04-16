@@ -1,15 +1,40 @@
-{ inputs, outputs, ... }: {
+{ config, pkgs, ... }: {
   ##################################################################################################################
   #
   # All matty's Home Manager Configuration
   #
   ##################################################################################################################
-home = {
-  imports = [];
-    user = "matty";
+  imports = [
+          ./terminal/kitty.nix
+          ./i3/i3.nix
+  ];
+
+  home = {
+    username = "matty";
     homeDirectory = "/home/matty";
-  stateVersion = "24.11";
-};
+    stateVersion = "24.11";
+    packages = with pkgs; [
+          xdg-utils
+
+      btop # replacement of htop/nmon
+      iotop # io monitoring
+      iftop # network monitoring
+
+      # system call monitoring
+      strace # system call monitoring
+      ltrace # library call monitoring
+      lsof # list open files
+
+      # system tools
+      sysstat
+      lm_sensors # for `sensors` command
+      ethtool
+      pciutils # lspci
+      usbutils # lsusb
+      glxinfo
+      picom
+    ];
+  };
   programs.home-manager.enable = true;
 
 }

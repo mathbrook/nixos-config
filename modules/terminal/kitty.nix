@@ -30,14 +30,14 @@
     };
 
     # consistent with other terminal emulators
-    keybindings = {
-      "ctrl+shift+m" = "toggle_maximized";
-      "ctrl+shift+f" = "show_scrollback"; # search in the current window
-    };
+    # keybindings = {
+    #   "ctrl+shift+m" = "toggle_maximized";
+    #   "ctrl+shift+f" = "show_scrollback"; # search in the current window
+    # };
 
     settings = {
       background_opacity = "0.93";
-      macos_option_as_alt = true; # Option key acts as Alt on macOS
+      # macos_option_as_alt = true; # Option key acts as Alt on macOS
       enable_audio_bell = false;
       tab_bar_edge = "top"; # tab bar on top
       #  To resolve issues:
@@ -47,7 +47,7 @@
       shell = "${pkgs.bash}/bin/bash --login -c 'nu --login --interactive'";
     };
 
-    # macOS specific settings
-    darwinLaunchOptions = ["--start-as=maximized"];
+    # # macOS specific settings
+    # darwinLaunchOptions = ["--start-as=maximized"];
   };
 }
