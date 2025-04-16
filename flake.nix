@@ -2,10 +2,11 @@
   description = "NixOS config for my computers :3c";
 
   inputs = {
-    # NixOS official package source, using the nixos-24.11 branch here
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-24.11";
+    # NixOS official package source, using nixos-unstable. Scary!
+    nixpkgs.url = "github:NixOS/nixpkgs?ref=nixos-unstable";
+    nixos-hardware.url = "github:NixOS/nixos-hardware/master";
     home-manager = {
-      url = "github:nix-community/home-manager/release-24.11";
+      url = "github:nix-community/home-manager/";
       # The `follows` keyword in inputs is used for inheritance.
       # Here, `inputs.nixpkgs` of home-manager is kept consistent with
       # the `inputs.nixpkgs` of the current flake,
@@ -14,7 +15,7 @@
     };
   };
 
-  outputs = { self, nixpkgs, home-manager, ... }@inputs: {
+  outputs = { self, nixpkgs, home-manager, nixos-hardware, ... }@inputs: {
 
     nixosConfigurations = {
       virtualbox = nixpkgs.lib.nixosSystem {
@@ -26,6 +27,7 @@
         modules = [
           ./laptop/configuration.nix
           ./modules/common.nix
+          nixos-hardware.nixosModules.framework-13-7040-amd
           home-manager.nixosModules.home-manager
           {
             home-manager.useGlobalPkgs = true;

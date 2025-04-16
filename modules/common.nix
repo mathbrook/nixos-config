@@ -153,7 +153,6 @@
     brave
     xdg-desktop-portal
     xdg-desktop-portal-gtk # For GTK apps, like GNOME/KDE portals
-    xdg-desktop-portal-kde
     spotify
 
     # window manager
