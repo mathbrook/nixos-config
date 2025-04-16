@@ -34,6 +34,7 @@
       glxinfo
       picom
     ];
+    # backupFileExtension = "backup";
   };
   programs.home-manager.enable = true;
 
