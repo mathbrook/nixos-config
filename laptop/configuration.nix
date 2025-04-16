@@ -9,7 +9,19 @@
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
     ];
+
+  environment.systemPackages = with pkgs; [
+    libinput
+    # still does not work!
+    libinput-gestures
+
+  ];
+  services.xserver.libinput.enable = true;
+  # services.xserver.libinput-gestures.enable = true;
+
   services.xserver.libinput.naturalScrolling = true;
+  services.xserver.libinput.horizontalScrolling = true;
+
 # Track the latest Linux kernel release for improved hardware support
 boot.kernelPackages = pkgs.linuxPackages_latest;
 
