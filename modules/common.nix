@@ -3,9 +3,13 @@
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
 { config, lib, pkgs, ... }:
-
+let
+  almaBackgrounds = pkgs.runCommand "alma-backgrounds" { } ''
+    mkdir -p $out/share/backgrounds
+    cp ${../alma.jpg} $out/share/backgrounds/alma.jpg
+  '';
+  in
 {
-
   # Enable networking
   networking.networkmanager.enable = true;
   # Set your time zone.
@@ -23,12 +27,16 @@
     LC_TELEPHONE = "en_US.UTF-8";
     LC_TIME = "en_US.UTF-8";
   };
+services.xserver.displayManager.lightdm.greeters.gtk.extraConfig = ''user-background = false'';
   # Enable the X11 windowing system
   services = {
     xserver = {
       enable = true;
       displayManager = {
-        lightdm.enable = true;
+        lightdm = {
+      enable = true;
+      background = "${almaBackgrounds}/share/backgrounds/alma.jpg";
+    };
         defaultSession = "xfce+i3";
         autoLogin = {
           enable = true;
@@ -77,7 +85,6 @@
     # Enable CUPS to print documents.
     printing.enable = true;
   };
-  
   hardware.pulseaudio.enable = false;
   security.rtkit.enable = true;
   services.pipewire = {
@@ -86,7 +93,7 @@
     alsa.support32Bit = true;
     pulse.enable = true;
     # If you want to use JACK applications, uncomment this
-    #jack.enable = true;
+    jack.enable = true;
 
     # use the example session manager (no others are packaged yet so this is enabled by default,
     # no need to redefine it in your config for now)
@@ -102,6 +109,7 @@
     extraGroups = [
       "networkmanager"
       "wheel"
+      "input"
     ];
     packages = with pkgs; [
       #  thunderbird
@@ -149,11 +157,13 @@
     #  vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
     wget # Get things
     micro # Fuck nano
+    tmux # goat
     nixfmt # Format .nix files
     brave # Browser 
     obsidian # Note taking
     xdg-desktop-portal
     xdg-desktop-portal-gtk # For GTK apps, like GNOME/KDE portals
+    # pulseaudio # Include this so the volume buttons work
     # window manager
     st
     sxhkd

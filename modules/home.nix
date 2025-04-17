@@ -7,6 +7,7 @@
   imports = [
           ./terminal/kitty.nix
           ./i3/i3.nix
+          ./media.nix
   ];
 
   home = {
