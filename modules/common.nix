@@ -147,14 +147,13 @@
 
   environment.systemPackages = with pkgs; [
     #  vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
-    wget
-    micro
-    nixfmt
-    brave
+    wget # Get things
+    micro # Fuck nano
+    nixfmt # Format .nix files
+    brave # Browser 
+    obsidian # Note taking
     xdg-desktop-portal
     xdg-desktop-portal-gtk # For GTK apps, like GNOME/KDE portals
-    spotify
-
     # window manager
     st
     sxhkd
