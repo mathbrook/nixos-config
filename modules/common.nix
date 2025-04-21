@@ -43,21 +43,21 @@ in {
           #   # };
           # };
         };
-        defaultSession = "xfce+i3";
+        defaultSession = "none+i3";
         autoLogin = {
           enable = true;
           user = "matty";
         };
       };
-      desktopManager = {
-        xterm.enable = false;
-        xfce = {
-          enable = true;
-          noDesktop = true;
-          enableXfwm = false;
-          enableScreensaver = false;
-        };
-      };
+      # desktopManager = {
+      #   xterm.enable = false;
+      #   xfce = {
+      #     enable = true;
+      #     noDesktop = true;
+      #     enableXfwm = false;
+      #     enableScreensaver = false;
+      #   };
+      # };
       windowManager.i3 = {
         enable = true;
         package = pkgs.i3-gaps;
@@ -65,7 +65,7 @@ in {
           rofi # application launcher, the same as dmenu
           dunst # notification daemon
           i3blocks # status bar
-          i3lock # default i3 screen locker
+          # i3lock # default i3 screen locker
           xss-lock
           xsecurelock
           xautolock # lock screen after some time
@@ -163,20 +163,20 @@ in {
     nixfmt # Format .nix files
     brave # Browser
     obsidian # Note taking
-    xdg-desktop-portal
-    xdg-desktop-portal-gtk # For GTK apps, like GNOME/KDE portals
+    # xdg-desktop-portal
+    # xdg-desktop-portal-gtk # For GTK apps, like GNOME/KDE portals
     # pulseaudio # Include this so the volume buttons work
     # window manager
-    st
-    sxhkd
-    termite
+    # st
+    # sxhkd
+    # termite
     # picom
     neofetch
-    mpv
+    # mpv
     ffmpeg
     wmctrl
     wmname
-    python310
+    # python310
     discord
     slack
     vscode
