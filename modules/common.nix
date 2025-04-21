@@ -69,6 +69,7 @@ in {
           xss-lock
           xsecurelock
           xautolock # lock screen after some time
+		  polybar
           i3status # provide information to i3bar
           i3-gaps # i3 with gaps
           # picom # transparency and shadows

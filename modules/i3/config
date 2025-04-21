@@ -58,6 +58,10 @@ exec --no-startup-id dex --autostart --environment i3
 # Start dunst
 exec_always --no-startup-id dunst
 
+#Start polybar
+# Kill existing Polybar instances, then launch new one(s)
+exec_always --no-startup-id sh -c "pkill -x polybar; polybar --config=$HOME/.config/polybar/config &"
+
 # The combination of xss-lock, nm-applet and pactl is a popular choice, so
 # they are included here as an example. Modify as you see fit.
 
