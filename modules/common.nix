@@ -8,8 +8,7 @@ let
     mkdir -p $out/share/backgrounds
     cp ${../alma.jpg} $out/share/backgrounds/alma.jpg
   '';
-  in
-{
+in {
   # Enable networking
   networking.networkmanager.enable = true;
   # Set your time zone.
@@ -27,16 +26,23 @@ let
     LC_TELEPHONE = "en_US.UTF-8";
     LC_TIME = "en_US.UTF-8";
   };
-services.xserver.displayManager.lightdm.greeters.gtk.extraConfig = ''user-background = false'';
+# services.xserver.displayManager.lightdm.greeters.gtk.extraConfig = ''user-background = false'';
   # Enable the X11 windowing system
   services = {
     xserver = {
       enable = true;
       displayManager = {
         lightdm = {
-      enable = true;
-      background = "${almaBackgrounds}/share/backgrounds/alma.jpg";
-    };
+          enable = true;
+          background = "${almaBackgrounds}/share/backgrounds/alma.jpg";
+          # greeters.gtk = {
+          #   enable = false;
+          #   # theme = {
+          #   #   name = "WhiteSur-dark-alt-purple";
+          #   #   package = pkgs.whitesur-gtk-theme;
+          #   # };
+          # };
+        };
         defaultSession = "xfce+i3";
         autoLogin = {
           enable = true;
@@ -49,29 +55,32 @@ services.xserver.displayManager.lightdm.greeters.gtk.extraConfig = ''user-backgr
           enable = true;
           noDesktop = true;
           enableXfwm = false;
+          enableScreensaver = false;
         };
       };
       windowManager.i3 = {
         enable = true;
         package = pkgs.i3-gaps;
-      extraPackages = with pkgs; [
-        rofi # application launcher, the same as dmenu
-        dunst # notification daemon
-        i3blocks # status bar
-        i3lock # default i3 screen locker
-        xautolock # lock screen after some time
-        i3status # provide information to i3bar
-        i3-gaps # i3 with gaps
-        # picom # transparency and shadows
-        feh # set wallpaper
-        acpi # battery information
-        arandr # screen layout manager
-        dex # autostart applications
-        xbindkeys # bind keys to commands
-        xorg.xbacklight # control screen brightness
-        xorg.xdpyinfo # get screen information
-        sysstat # get system information
-      ];
+        extraPackages = with pkgs; [
+          rofi # application launcher, the same as dmenu
+          dunst # notification daemon
+          i3blocks # status bar
+          i3lock # default i3 screen locker
+          xss-lock
+          xsecurelock
+          xautolock # lock screen after some time
+          i3status # provide information to i3bar
+          i3-gaps # i3 with gaps
+          # picom # transparency and shadows
+          feh # set wallpaper
+          acpi # battery information
+          arandr # screen layout manager
+          dex # autostart applications
+          xbindkeys # bind keys to commands
+          xorg.xbacklight # control screen brightness
+          xorg.xdpyinfo # get screen information
+          sysstat # get system information
+        ];
       };
       # Configure keymap in X11
       xkb = {
@@ -106,14 +115,11 @@ services.xserver.displayManager.lightdm.greeters.gtk.extraConfig = ''user-backgr
   users.users.matty = {
     isNormalUser = true;
     description = "matty";
-    extraGroups = [
-      "networkmanager"
-      "wheel"
-      "input"
-    ];
-    packages = with pkgs; [
-      #  thunderbird
-    ];
+    extraGroups = [ "networkmanager" "wheel" "input" ];
+    packages = with pkgs;
+      [
+        #  thunderbird
+      ];
   };
 
   # Workaround for GNOME autologin: https://github.com/NixOS/nixpkgs/issues/103746#issuecomment-945091229
@@ -126,9 +132,7 @@ services.xserver.displayManager.lightdm.greeters.gtk.extraConfig = ''user-backgr
   programs.git = {
     enable = true;
     config = {
-      init = {
-        defaultBranch = "main";
-      };
+      init = { defaultBranch = "main"; };
       user = {
         name = "Matthew Samson";
         email = "mathos.brook@gmail.com";
@@ -140,18 +144,16 @@ services.xserver.displayManager.lightdm.greeters.gtk.extraConfig = ''user-backgr
 
   # List packages installed in system profile. To search, run:
   # $ nix search wget
-  nix.settings.experimental-features = [
-    "nix-command"
-    "flakes"
-  ];
-    # do garbage collection weekly to keep disk usage low
+  nix.settings.experimental-features = [ "nix-command" "flakes" ];
+  # do garbage collection weekly to keep disk usage low
   nix.gc = {
     automatic = lib.mkDefault true;
     dates = lib.mkDefault "weekly";
     options = lib.mkDefault "--delete-older-than 7d";
   };
   nix.settings.auto-optimise-store = true;
-  nix.channel.enable = false; # remove nix-channel related tools & configs, we use flakes instead.
+  nix.channel.enable =
+    false; # remove nix-channel related tools & configs, we use flakes instead.
 
   environment.systemPackages = with pkgs; [
     #  vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
@@ -159,7 +161,7 @@ services.xserver.displayManager.lightdm.greeters.gtk.extraConfig = ''user-backgr
     micro # Fuck nano
     tmux # goat
     nixfmt # Format .nix files
-    brave # Browser 
+    brave # Browser
     obsidian # Note taking
     xdg-desktop-portal
     xdg-desktop-portal-gtk # For GTK apps, like GNOME/KDE portals
