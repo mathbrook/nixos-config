@@ -4,18 +4,14 @@
   # All matty's Home Manager Configuration
   #
   ##################################################################################################################
-  imports = [
-          ./terminal/kitty.nix
-          ./i3/i3.nix
-          ./media.nix
-  ];
+  imports = [ ./terminal/kitty.nix ./i3/i3.nix ./media.nix ];
 
   home = {
     username = "matty";
     homeDirectory = "/home/matty";
     stateVersion = "24.11";
     packages = with pkgs; [
-          xdg-utils
+      xdg-utils
 
       btop # replacement of htop/nmon
       iotop # io monitoring

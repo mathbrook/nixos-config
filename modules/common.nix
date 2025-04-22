@@ -26,7 +26,7 @@ in {
     LC_TELEPHONE = "en_US.UTF-8";
     LC_TIME = "en_US.UTF-8";
   };
-# services.xserver.displayManager.lightdm.greeters.gtk.extraConfig = ''user-background = false'';
+  # services.xserver.displayManager.lightdm.greeters.gtk.extraConfig = ''user-background = false'';
   # Enable the X11 windowing system
   services = {
     xserver = {
@@ -69,13 +69,15 @@ in {
           xss-lock
           xsecurelock
           xautolock # lock screen after some time
-		  polybar
+          polybar
+          polybar-pulseaudio-control
           i3status # provide information to i3bar
           i3-gaps # i3 with gaps
           # picom # transparency and shadows
           feh # set wallpaper
           acpi # battery information
           arandr # screen layout manager
+          autorandr
           dex # autostart applications
           xbindkeys # bind keys to commands
           xorg.xbacklight # control screen brightness
