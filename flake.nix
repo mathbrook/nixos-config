@@ -42,6 +42,12 @@
         system = "x86_64-linux";
         modules = [ ./virtualbox-lg/configuration.nix ./modules/common.nix ];
       };
+      jetson = nixpkgs.lib.nixosSystem {
+        system = "aarch64-linux";
+        modules = [
+          ./jetson/configuration.nix
+        ];
+      };
     };
   };
 }
