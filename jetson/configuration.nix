@@ -20,7 +20,7 @@ nix.settings.experimental-features = ["nix-command" "flakes" "ca-derivations"];
   # Use the systemd-boot EFI boot loader.
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
-boot.kernelParams = [ "fbcon=map:1" ];
+# boot.kernelParams = [ "fbcon=map:1" ];
   networking.hostName = "nixos"; # Define your hostname.
   # Pick only one of the below networking options.
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
@@ -44,7 +44,7 @@ boot.kernelParams = [ "fbcon=map:1" ];
   # Enable the X11 windowing system.
 services.xserver.enable = true;
 # services.xserver.displayManager.lightdm.enable = true;
-# services.xserver.desktopManager.gnome.enable = true;
+services.xserver.desktopManager.gnome.enable = true;
 
   nixpkgs.config = {
     allowUnfree = true;
