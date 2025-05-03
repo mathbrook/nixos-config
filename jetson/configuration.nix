@@ -11,16 +11,16 @@ nix.settings.experimental-features = ["nix-command" "flakes" "ca-derivations"];
     imports =
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
-      (builtins.fetchTarball "https://github.com/anduril/jetpack-nixos/archive/master.tar.gz" + "/modules/default.nix")
     ];
 
   hardware.nvidia-jetpack.enable = true;
   hardware.nvidia-jetpack.som = "xavier-nx-emmc"; # Other options include orin-agx, xavier-nx, and xavier-nx-emmc
   hardware.nvidia-jetpack.carrierBoard = "devkit";
+  hardware.nvidia-jetpack.modesetting.enable = false;
   # Use the systemd-boot EFI boot loader.
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
-
+boot.kernelParams = [ "fbcon=map:1" ];
   networking.hostName = "nixos"; # Define your hostname.
   # Pick only one of the below networking options.
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
@@ -42,7 +42,9 @@ nix.settings.experimental-features = ["nix-command" "flakes" "ca-derivations"];
   };
 
   # Enable the X11 windowing system.
-  services.xserver.enable = false;
+services.xserver.enable = true;
+# services.xserver.displayManager.lightdm.enable = true;
+# services.xserver.desktopManager.gnome.enable = true;
 
   nixpkgs.config = {
     allowUnfree = true;
@@ -72,14 +74,15 @@ nix.settings.experimental-features = ["nix-command" "flakes" "ca-derivations"];
   users.users.nixos = {
         password = "nixos";
     isNormalUser = true;
-    extraGroups = [ "wheel" ]; # Enable ‘sudo’ for the user.
+    extraGroups = [ "wheel" "video" ]; # Enable ‘sudo’ for the user.
     packages = with pkgs; [
       tree
     ];
   };
 
   # programs.firefox.enable = true;
-
+systemd.services."getty@tty1".enable = false;
+systemd.services."autovt@tty1".enable = false;
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [
@@ -87,6 +90,10 @@ nix.settings.experimental-features = ["nix-command" "flakes" "ca-derivations"];
     wget
         micro
         git
+        # opencv
+        python313
+        python313Packages.opencv4
+        usbutils
   ];
 
   # Some programs need SUID wrappers, can be configured further or are
@@ -111,7 +118,7 @@ nix.settings.experimental-features = ["nix-command" "flakes" "ca-derivations"];
   # Copy the NixOS configuration file and link it from the resulting system
   # (/run/current-system/configuration.nix). This is useful in case you
   # accidentally delete configuration.nix.
-  system.copySystemConfiguration = true;
+  # system.copySystemConfiguration = true;
 
   # This option defines the first version of NixOS you have installed on this particular machine,
   # and is used to maintain compatibility with application data (e.g. databases) created on older NixOS versions.

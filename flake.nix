@@ -1,7 +1,7 @@
 {
   description = "NixOS config for my computers :3c";
 
-  inputs = {
+  inputs = rec {
     # NixOS official package source, using nixos-unstable. Scary!
     nixpkgs.url = "github:NixOS/nixpkgs?ref=nixos-unstable";
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
@@ -13,9 +13,10 @@
       # to avoid problems caused by different versions of nixpkgs.
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    jetpack-nixos.url = "github:anduril/jetpack-nixos";
   };
 
-  outputs = { self, nixpkgs, home-manager, nixos-hardware, ... }@inputs: {
+  outputs = { self, nixpkgs, home-manager, nixos-hardware, jetpack-nixos, ... }@inputs: rec {
 
     nixosConfigurations = {
       virtualbox = nixpkgs.lib.nixosSystem {
@@ -44,10 +45,15 @@
       };
       jetson = nixpkgs.lib.nixosSystem {
         system = "aarch64-linux";
+              specialArgs = { inherit self; };
+
         modules = [
           ./jetson/configuration.nix
+          jetpack-nixos.nixosModules.default
         ];
       };
     };
+    jetson_top = nixosConfigurations.jetson.config.system.build.toplevel;
+    # images.xavier = nixosConfigurations.jetson.config.system.build.sdImage;
   };
 }
