@@ -3,28 +3,68 @@
 # https://search.nixos.org/options and in the NixOS manual (`nixos-help`).
 
 { config, lib, pkgs, ... }:
+let
+  onnxruntime-gpu-wheel = ps:
+    ps.buildPythonPackage {
+      pname = "onnxruntime-gpu";
+      version = "1.16.3";
+      format = "wheel";
 
-{
+      src = pkgs.fetchurl {
+        url =
+          "https://pypi.jetson-ai-lab.dev/jp5/cu114/+f/43e/f0cec5f026159/onnxruntime_gpu-1.16.3-cp311-cp311-linux_aarch64.whl";
+        sha256 =
+          "43ef0cec5f026159306e69540138f457ecbc8eb0282d1f7166761e7fbc84288e";
+      };
 
-nix.settings.experimental-features = ["nix-command" "flakes" "ca-derivations"];
-  nix.settings.require-sigs = false;
-    imports =
-    [ # Include the results of the hardware scan.
-      ./hardware-configuration.nix
+      propagatedBuildInputs = with ps; [
+        coloredlogs
+        flatbuffers
+        numpy
+        packaging
+        protobuf
+        sympy
+      ];
+    };
+  cudainfo =
+    pkgs.writeScriptBin "cudainfo" (builtins.readFile ../scripts/cudainfo.py);
+  pythonPackages = ps:
+    with ps; [
+      pipx
+      pip
+      virtualenv
+      numpy
+      wheel
+      onnx
+      tqdm
+      matplotlib
+      pycuda
+      (onnxruntime-gpu-wheel ps)
     ];
+in {
+
+  nix.settings.experimental-features =
+    [ "nix-command" "flakes" "ca-derivations" ];
+  nix.settings.require-sigs = false;
+  imports = [ # Include the results of the hardware scan.
+    ./hardware-configuration.nix
+  ];
 
   hardware.nvidia-jetpack.enable = true;
-  hardware.nvidia-jetpack.som = "xavier-nx-emmc"; # Other options include orin-agx, xavier-nx, and xavier-nx-emmc
+  hardware.nvidia-jetpack.som =
+    "xavier-nx-emmc"; # Other options include orin-agx, xavier-nx, and xavier-nx-emmc
   hardware.nvidia-jetpack.carrierBoard = "devkit";
   hardware.nvidia-jetpack.modesetting.enable = false;
+  hardware.graphics.enable = true;
   # Use the systemd-boot EFI boot loader.
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
-# boot.kernelParams = [ "fbcon=map:1" ];
+  # boot.kernelParams = [ "fbcon=map:1" ];
   networking.hostName = "nixos"; # Define your hostname.
   # Pick only one of the below networking options.
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
-  networking.networkmanager.enable = true;  # Easiest to use and most distros use this by default.
+  networking.networkmanager.enable =
+    true; # Easiest to use and most distros use this by default.
   services.sshd.enable = true;
   # Set your time zone.
   # time.timeZone = "Europe/Amsterdam";
@@ -42,20 +82,24 @@ nix.settings.experimental-features = ["nix-command" "flakes" "ca-derivations"];
   };
 
   # Enable the X11 windowing system.
-services.xserver.enable = true;
-services.xserver.displayManager.lightdm.enable = true;
-services.xserver.desktopManager.gnome.enable = true;
-services.xserver.displayManager.defaultSession = "lightdm+gnome";
-  nixpkgs.config = {
-    allowUnfree = true;
-    cudaSupport = true;
-    cudaCapabilities = [ "7.2" "8.7" ];
-  };
-
+  services.xserver.enable = true;
+  services.xserver.displayManager.lightdm.enable = true;
+  services.xserver.desktopManager.gnome.enable = true;
+  services.xserver.displayManager.defaultSession = "gnome";
   # Configure keymap in X11
   services.xserver.xkb.layout = "us";
   services.xserver.xkb.options = "eurosign:e,caps:escape";
 
+  # remember to keep the cachix keys updated for nvidia: while using cachix for the nvidia latest packages
+  # do this by running `cachix use cuda-maintainers`
+  nix = {
+    settings = {
+      substituters = [ "https://cuda-maintainers.cachix.org" ];
+      trusted-public-keys = [
+        "cuda-maintainers.cachix.org-1:0dq3bujKpuEPMCX6U4WylrUDZ9JyUG0VpVZa7CNfq5E="
+      ];
+    };
+  };
   # Enable CUPS to print documents.
   # services.printing.enable = true;
 
@@ -72,29 +116,66 @@ services.xserver.displayManager.defaultSession = "lightdm+gnome";
 
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users.nixos = {
-        password = "nixos";
+    password = "nixos";
     isNormalUser = true;
     extraGroups = [ "wheel" "video" ]; # Enable ‘sudo’ for the user.
-    packages = with pkgs; [
-      tree
-    ];
+    packages = with pkgs; [ tree ];
   };
 
   # programs.firefox.enable = true;
-systemd.services."getty@tty1".enable = false;
-systemd.services."autovt@tty1".enable = false;
+  systemd.services."getty@tty1".enable = false;
+  systemd.services."autovt@tty1".enable = false;
   # List packages installed in system profile. To search, run:
   # $ nix search wget
+  # pkgs.cudainfo = pkgs.writeScriptBin "cudainfo" (builtins.readFile ../scripts/cudainfo.py);
+  environment.variables = with pkgs; {
+    LD_LIBRARY_PATH = lib.makeLibraryPath [
+      stdenv.cc.cc.lib
+      cudaPackages.cudatoolkit
+      cudaPackages.cudnn
+      cudaPackages.tensorrt
+      cudaPackages.vpi2
+      nvidia-jetpack.l4t-cuda
+      nvidia-jetpack.l4t-gstreamer
+      nvidia-jetpack.l4t-multimedia
+      nvidia-jetpack.l4t-camera
+    ];
+    NVCC_PREPEND_FLAGS = "--compiler-bindir ${pkgs.gcc11}/bin/gcc";
+    NVCC_APPEND_FLAGS = "-I${pkgs.cudaPackages.cuda_cudart.include}/include";
+  };
+
   environment.systemPackages = with pkgs; [
     vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
     wget
-        micro
-        git
-        # opencv
-        python313
-        python313Packages.opencv4
-        usbutils
+    micro
+    git
+    btop
+    usbutils
+    pciutils
+    tmux
+    nixfmt
+    # sw
+    gcc
+    # cuda thingies
+    cudainfo
+    cudaPackages.cuda_nvcc
+    nvidia-jetpack.samples.cuda-test
+    nvidia-jetpack.samples.cudnn-test
+    opencv
+    #python
+    (python311.withPackages pythonPackages)
+    # Networking
+    tcpdump
+    ethtool
+    wget
+    iperf3
+    # cudainfo
   ];
+
+  systemd.targets.sleep.enable = false;
+  systemd.targets.suspend.enable = false;
+  systemd.targets.hibernate.enable = false;
+  systemd.targets.hybrid-sleep.enable = false;
 
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
@@ -140,4 +221,3 @@ systemd.services."autovt@tty1".enable = false;
   system.stateVersion = "24.11"; # Did you read the comment?
 
 }
-
