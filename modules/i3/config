@@ -24,7 +24,7 @@ workspace_layout default
 new_window pixel 1
 
 # thin borders
-# hide_edge_borders both
+hide_edge_borders both
 
 # Set inner/outer gaps
 gaps inner 6
@@ -80,10 +80,14 @@ exec --no-startup-id nm-applet
 exec_always --no-startup-id picom -b --config ~/.config/picom/picom.conf
 
 # Wallpaper
-exec --no-startup-id sleep 1 && feh --bg-fill ~/.config/i3/wallpaper.jpg
+exec_always --no-startup-id sleep 1 && feh --bg-fill ~/.config/i3/wallpaper.jpg
 
 # gesture detection
 exec_always --no-startup-id systemctl --user start libinput-gestures.service
+
+# Brightness
+bindsym XF86MonBrightnessDown exec --no-startup-id brightnessctl s 5%-
+bindsym XF86MonBrightnessUp exec --no-startup-id brightnessctl s +5%
 
 # Use wpctl to adjust volume in PulseAudio.
 set $refresh_i3status killall -SIGUSR1 i3status
@@ -220,7 +224,7 @@ bindsym $mod+Shift+c reload
 # restart i3 inplace (preserves your layout/session, can be used to upgrade i3)
 bindsym $mod+Shift+r restart
 # exit i3 (logs you out of your X session)
-bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -B 'Yes, exit i3' 'i3-msg exit'"
+# bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -B 'Yes, exit i3' 'i3-msg exit'"
 
 # resize window (you can also use the mouse for that)
 mode "resize" {

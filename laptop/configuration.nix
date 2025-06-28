@@ -39,6 +39,6 @@
   system.stateVersion = "24.11"; # Did you read the comment?
 
   services.udev.extraRules = ''
-    ACTION=="change", SUBSYSTEM=="drm", RUN+="${pkgs.autorandr}/bin/autorandr -c"'';
+    ACTION=="change", SUBSYSTEM=="drm", RUN+="${pkgs.autorandr}/bin/autorandr -c --match-edid"'';
 
 }

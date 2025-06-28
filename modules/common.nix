@@ -27,6 +27,12 @@ in {
     LC_TIME = "en_US.UTF-8";
   };
   # services.xserver.displayManager.lightdm.greeters.gtk.extraConfig = ''user-background = false'';
+  services.openssh = {
+  	enable = true;
+  	forwardX11 = true;
+  };
+  services.tailscale.enable = true;
+  services.mullvad-vpn.enable = true;
   # Enable the X11 windowing system
   services = {
     xserver = {
@@ -131,6 +137,11 @@ in {
 
   # Install firefox.
   # programs.hyprland.enable = true;
+  programs.steam = {
+  	enable = true;
+  	remotePlay.openFirewall = true;      # Optional
+  	dedicatedServer.openFirewall = true; # Optional
+  };
   programs.firefox.enable = false;
   programs.git = {
     enable = true;
@@ -142,6 +153,16 @@ in {
       };
     };
   };
+
+  # programs.light.enable = true; # Needed for the /run/wrappers/bin/light SUID wrapper.
+  # services.actkbd = {
+  #   enable = true;
+  #   bindings = [
+  #     { keys = [ 233 ]; events = [ "key" ]; command = "brightnessctl s +5"; }
+  #     { keys = [ 232 ]; events = [ "key" ]; command = "brightnessctl s -5"; }
+  #   ];
+  # };
+  
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
 
@@ -166,6 +187,7 @@ in {
     nixfmt # Format .nix files
     brave # Browser
     obsidian # Note taking
+	mullvad-vpn
     # xdg-desktop-portal
     # xdg-desktop-portal-gtk # For GTK apps, like GNOME/KDE portals
     # pulseaudio # Include this so the volume buttons work
@@ -186,5 +208,19 @@ in {
     neovim
     alacritty
     kitty
+	noto-fonts
+	# font-awesome
+	# screenshot utils
+	llvmPackages_20.clang-unwrapped
+	shotgun
+	scrot
+	brightnessctl
+    gscreenshot
+	slurp
+	slop
+	openvpn
+	uv
+	# need a python version for uv since it cannot install on its own on nixos
+	python313
   ];
 }
