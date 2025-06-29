@@ -17,5 +17,14 @@
       # protocol = "ssh-ng";
       supportedFeatures = [ ];
     }
+    {
+      hostName = "matty-framework";
+      system = "x86_64-linux";
+      sshUser = "matty";
+      sshKey = "/root/.ssh/nixremote";
+      maxJobs = 12;
+      # protocol = "ssh-ng";
+      supportedFeatures = [ ];
+    }    
   ];
 }

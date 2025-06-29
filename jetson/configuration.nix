@@ -46,6 +46,13 @@ in {
   nix.settings.experimental-features =
     [ "nix-command" "flakes" "ca-derivations" ];
   nix.settings.require-sigs = false;
+  nix.settings.trusted-users = [
+  	"root"
+  	"nixos"
+  	"ubuntu"
+  	"matty"
+  	"brookie"
+  ];
   imports = [ # Include the results of the hardware scan.
     ./hardware-configuration.nix
   ];
@@ -65,7 +72,8 @@ in {
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
   networking.networkmanager.enable =
     true; # Easiest to use and most distros use this by default.
-  services.sshd.enable = true;
+  # services.sshd.enable = true;
+  # services.sshd.settings.X11Forwarding = true;
   # Set your time zone.
   # time.timeZone = "Europe/Amsterdam";
 
@@ -170,6 +178,10 @@ in {
     wget
     iperf3
     # cudainfo
+    # Pain and Suffering:
+    xorg.libX11
+    xorg.libXext
+    xorg.libXrender
   ];
 
   systemd.targets.sleep.enable = false;
@@ -188,7 +200,10 @@ in {
   # List services that you want to enable:
 
   # Enable the OpenSSH daemon.
-  # services.openssh.enable = true;
+  services.openssh = {
+  	enable = true;
+  	forwardX11 = true;
+  };
 
   # Open ports in the firewall.
   # networking.firewall.allowedTCPPorts = [ ... ];
