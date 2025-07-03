@@ -191,7 +191,6 @@ in
     xorg.libX11
     xorg.libXext
     xorg.libXrender
-    emitter-orchestrator
   ];
 
   systemd.targets.sleep.enable = false;

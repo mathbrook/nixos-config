@@ -55,9 +55,15 @@
           modules = [
             ./jetson/configuration.nix
             ./modules/builders.nix
+            ./modules/emitter.nix
             (nixpkg_overlays)
             jetpack.nixosModules.default
-            # mcx-emitter.packages.emitter-orchestrator
+            (
+              { config, ... }:
+              {
+                emitter-orchestrator-service.enable = true;
+              }
+            )
           ];
         };
       };
