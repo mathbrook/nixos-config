@@ -134,6 +134,7 @@ in
     extraGroups = [
       "wheel"
       "video"
+      "dialout"
     ]; # Enable ‘sudo’ for the user.
     packages = with pkgs; [ tree ];
   };
@@ -145,19 +146,19 @@ in
   # $ nix search wget
   # pkgs.cudainfo = pkgs.writeScriptBin "cudainfo" (builtins.readFile ../scripts/cudainfo.py);
   environment.variables = with pkgs; {
-    LD_LIBRARY_PATH = lib.makeLibraryPath [
-      stdenv.cc.cc.lib
-      cudaPackages.cudatoolkit
-      cudaPackages.cudnn
-      cudaPackages.tensorrt
-      # cudaPackages.vpi2
-      nvidia-jetpack.l4t-cuda
-      nvidia-jetpack.l4t-gstreamer
-      nvidia-jetpack.l4t-multimedia
-      nvidia-jetpack.l4t-camera
-    ];
-    NVCC_PREPEND_FLAGS = "--compiler-bindir ${pkgs.gcc11}/bin/gcc";
-    NVCC_APPEND_FLAGS = "-I${pkgs.cudaPackages.cuda_cudart.include}/include";
+    # LD_LIBRARY_PATH = lib.makeLibraryPath [
+    #   stdenv.cc.cc.lib
+    #   cudaPackages.cudatoolkit
+    #   cudaPackages.cudnn
+    #   cudaPackages.tensorrt
+    #   # cudaPackages.vpi2
+    #   nvidia-jetpack.l4t-cuda
+    #   nvidia-jetpack.l4t-gstreamer
+    #   nvidia-jetpack.l4t-multimedia
+    #   nvidia-jetpack.l4t-camera
+    # ];
+    # NVCC_PREPEND_FLAGS = "--compiler-bindir ${pkgs.gcc11}/bin/gcc";
+    # NVCC_APPEND_FLAGS = "-I${pkgs.cudaPackages.cuda_cudart.include}/include";
   };
 
   environment.systemPackages = with pkgs; [
