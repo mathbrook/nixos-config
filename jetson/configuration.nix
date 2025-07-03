@@ -2,19 +2,23 @@
 # your system. Help is available in the configuration.nix(5) man page, on
 # https://search.nixos.org/options and in the NixOS manual (`nixos-help`).
 
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 let
-  onnxruntime-gpu-wheel = ps:
+  onnxruntime-gpu-wheel =
+    ps:
     ps.buildPythonPackage {
       pname = "onnxruntime-gpu";
       version = "1.16.3";
       format = "wheel";
 
       src = pkgs.fetchurl {
-        url =
-          "https://pypi.jetson-ai-lab.dev/jp5/cu114/+f/43e/f0cec5f026159/onnxruntime_gpu-1.16.3-cp311-cp311-linux_aarch64.whl";
-        sha256 =
-          "43ef0cec5f026159306e69540138f457ecbc8eb0282d1f7166761e7fbc84288e";
+        url = "https://pypi.jetson-ai-lab.dev/jp5/cu114/+f/43e/f0cec5f026159/onnxruntime_gpu-1.16.3-cp311-cp311-linux_aarch64.whl";
+        sha256 = "43ef0cec5f026159306e69540138f457ecbc8eb0282d1f7166761e7fbc84288e";
       };
 
       propagatedBuildInputs = with ps; [
@@ -26,10 +30,9 @@ let
         sympy
       ];
     };
-  cudainfo =
-    pkgs.writeScriptBin "cudainfo" (builtins.readFile ../scripts/cudainfo.py);
-  pythonPackages = ps:
-    with ps; [
+  cudainfo = pkgs.writeScriptBin "cudainfo" (builtins.readFile ../scripts/cudainfo.py);
+  pythonPackages =
+    ps: with ps; [
       pipx
       pip
       virtualenv
@@ -41,25 +44,37 @@ let
       pycuda
       (onnxruntime-gpu-wheel ps)
     ];
-in {
+in
+{
+  nix = {
+    settings = {
+      experimental-features = [
+        "nix-command"
+        "flakes"
+        "ca-derivations"
+      ];
+      require-sigs = false;
+      trusted-users = [
+        "root"
+        "nixos"
+        "ubuntu"
+        "matty"
+        "brookie"
+      ];
+      substituters = [ "https://cuda-maintainers.cachix.org" ];
+      trusted-public-keys = [
+        "cuda-maintainers.cachix.org-1:0dq3bujKpuEPMCX6U4WylrUDZ9JyUG0VpVZa7CNfq5E="
+      ];
+    };
 
-  nix.settings.experimental-features =
-    [ "nix-command" "flakes" "ca-derivations" ];
-  nix.settings.require-sigs = false;
-  nix.settings.trusted-users = [
-  	"root"
-  	"nixos"
-  	"ubuntu"
-  	"matty"
-  	"brookie"
-  ];
-  imports = [ # Include the results of the hardware scan.
+  };
+  imports = [
+    # Include the results of the hardware scan.
     ./hardware-configuration.nix
   ];
 
   hardware.nvidia-jetpack.enable = true;
-  hardware.nvidia-jetpack.som =
-    "xavier-nx-emmc"; # Other options include orin-agx, xavier-nx, and xavier-nx-emmc
+  hardware.nvidia-jetpack.som = "xavier-nx-emmc"; # Other options include orin-agx, xavier-nx, and xavier-nx-emmc
   hardware.nvidia-jetpack.carrierBoard = "devkit";
   hardware.nvidia-jetpack.modesetting.enable = false;
   hardware.graphics.enable = true;
@@ -68,10 +83,7 @@ in {
   boot.loader.efi.canTouchEfiVariables = true;
   # boot.kernelParams = [ "fbcon=map:1" ];
   networking.hostName = "nixos"; # Define your hostname.
-  # Pick only one of the below networking options.
-  # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
-  networking.networkmanager.enable =
-    true; # Easiest to use and most distros use this by default.
+  networking.networkmanager.enable = true; # Easiest to use and most distros use this by default.
   # services.sshd.enable = true;
   # services.sshd.settings.X11Forwarding = true;
   # Set your time zone.
@@ -100,14 +112,7 @@ in {
 
   # remember to keep the cachix keys updated for nvidia: while using cachix for the nvidia latest packages
   # do this by running `cachix use cuda-maintainers`
-  nix = {
-    settings = {
-      substituters = [ "https://cuda-maintainers.cachix.org" ];
-      trusted-public-keys = [
-        "cuda-maintainers.cachix.org-1:0dq3bujKpuEPMCX6U4WylrUDZ9JyUG0VpVZa7CNfq5E="
-      ];
-    };
-  };
+
   # Enable CUPS to print documents.
   # services.printing.enable = true;
 
@@ -126,7 +131,10 @@ in {
   users.users.nixos = {
     password = "nixos";
     isNormalUser = true;
-    extraGroups = [ "wheel" "video" ]; # Enable ‘sudo’ for the user.
+    extraGroups = [
+      "wheel"
+      "video"
+    ]; # Enable ‘sudo’ for the user.
     packages = with pkgs; [ tree ];
   };
 
@@ -142,7 +150,7 @@ in {
       cudaPackages.cudatoolkit
       cudaPackages.cudnn
       cudaPackages.tensorrt
-      cudaPackages.vpi2
+      # cudaPackages.vpi2
       nvidia-jetpack.l4t-cuda
       nvidia-jetpack.l4t-gstreamer
       nvidia-jetpack.l4t-multimedia
@@ -182,6 +190,7 @@ in {
     xorg.libX11
     xorg.libXext
     xorg.libXrender
+    emitter-orchestrator
   ];
 
   systemd.targets.sleep.enable = false;
@@ -201,8 +210,8 @@ in {
 
   # Enable the OpenSSH daemon.
   services.openssh = {
-  	enable = true;
-  	forwardX11 = true;
+    enable = true;
+    forwardX11 = true;
   };
 
   # Open ports in the firewall.
