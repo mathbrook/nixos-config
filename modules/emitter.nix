@@ -5,7 +5,7 @@
   ...
 }:
 let
-  oxos-config-path = "/opt/oxos/config";
+  oxos-config-path = "/opt/oxos/data/config";
 in
 {
   options.emitter-orchestrator-service.enable = lib.mkOption {

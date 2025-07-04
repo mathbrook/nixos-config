@@ -165,11 +165,11 @@
         "nixpkgs": "nixpkgs"
       },
       "locked": {
-        "lastModified": 1751513147,
-        "narHash": "sha256-idSXM3Y0KNf/WDDqGfthiOSQMwZYwis1JZhTkdWrr6A=",
+        "lastModified": 1751580393,
+        "narHash": "sha256-oRipTA4/JGeDGI31GNNVGFx0uhuR7h/R9SvkR4K8Axc=",
         "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "426b405d979d893832549b95f23c13537c65d244",
+        "rev": "402333d5ec2f9eed0f2584555936361f39d2f93e",
         "type": "github"
       },
       "original": {
@@ -256,11 +256,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1751542967,
-        "narHash": "sha256-MWapIHUhCPatsRub8/ODx9UVr4ajB/t0hK4YsHbo1/Q=",
+        "lastModified": 1751583420,
+        "narHash": "sha256-GcYSge5uUrLF8w+BSqEiBSIaKqvbr6ucCJJDYvIRP2w=",
         "ref": "nix",
-        "rev": "31690bedbdf8a78006bbd4e565ed139378655a3b",
-        "revCount": 2275,
+        "rev": "52d62e052ef82a088e2567e229337e32f4465627",
+        "revCount": 2277,
         "type": "git",
         "url": "ssh://git@github.com/oxosmedical/mcx-emitter.git"
       },
