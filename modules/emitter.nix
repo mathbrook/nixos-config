@@ -28,6 +28,30 @@ in
         Restart = "on-failure";
       };
     };
+    systemd.services.wifi-stability-service = {
+      description = "wifi-stability";
+      wantedBy = [ "multi-user.target" ];
+      after = [ "network.target" ];
+
+      serviceConfig = {
+        After = [ "network.target" ];
+        ExecStart = "${pkgs.wifi-stability}/bin/wifi-stability";
+        ExecStop = "/bin/kill -9 $MAINPID";
+        Restart = "on-failure";
+      };
+    };
+    systemd.services.idle-manager-service = {
+      description = "idle-manager";
+      wantedBy = [ "multi-user.target" ];
+      after = [ "network.target" ];
+
+      serviceConfig = {
+        After = [ "network.target" ];
+        ExecStart = "${pkgs.idle-manager}/bin/idle-manager";
+        ExecStop = "/bin/kill -9 $MAINPID";
+        Restart = "on-failure";
+      };
+    };
 
     # Create oxos config directory if it doesn't exist
     system.activationScripts.createConfigDir = pkgs.lib.mkForce ''
