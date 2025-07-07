@@ -176,6 +176,12 @@ in {
     options = lib.mkDefault "--delete-older-than 7d";
   };
   nix.settings.auto-optimise-store = true;
+  nix.settings.trusted-users = [
+  	"matty"
+  	"nixos"
+  	"ubuntu"
+  	"brookie"
+  ];
   nix.channel.enable =
     false; # remove nix-channel related tools & configs, we use flakes instead.
 

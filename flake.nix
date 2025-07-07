@@ -28,6 +28,7 @@
           ./laptop/configuration.nix
           ./modules/common.nix
           ./modules/spotify.nix
+		  ./modules/builders.nix
           nixos-hardware.nixosModules.framework-13-7040-amd
           home-manager.nixosModules.home-manager
           {
