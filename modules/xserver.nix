@@ -2,15 +2,19 @@
 {
   services.xserver = {
     enable = true;
-    displayManager.lightdm = {
-      enable = true;
-      background = "/run/current-system/sw/share/backgrounds/alma.jpg";
-      # You can adjust the path above if you want to use almaBackgrounds
-    };
-    defaultSession = "none+i3";
-    autoLogin = {
-      enable = true;
-      user = "matty";
+    displayManager = {
+      defaultSession = "none+i3";
+      
+      autoLogin = {
+        enable = true;
+        user = "matty";
+      };
+
+      lightdm = {
+        enable = true;
+        background = "/run/current-system/sw/share/backgrounds/alma.jpg";
+        # You can adjust the path above if you want to use almaBackgrounds
+      };
     };
     windowManager.i3 = {
       enable = true;

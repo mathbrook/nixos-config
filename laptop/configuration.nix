@@ -41,5 +41,25 @@
   system.stateVersion = "24.11"; # Did you read the comment?
 
   services.udev.extraRules = ''ACTION=="change", SUBSYSTEM=="drm", RUN+="${pkgs.autorandr}/bin/autorandr -c --match-edid"'';
-
+  # Audio and pipewire config for desktop systems
+  hardware.pulseaudio.enable = false;
+  security.rtkit.enable = true;
+  services.pipewire = {
+    enable = true;
+    alsa.enable = true;
+    alsa.support32Bit = true;
+    pulse.enable = true;
+    jack.enable = true;
+  };
+  services.printing.enable = true;
+  programs.steam = {
+    enable = true;
+    remotePlay.openFirewall = true; # Optional
+    dedicatedServer.openFirewall = true; # Optional
+  };
+  # Xresources for cursor and DPI
+  # xresources.properties = {
+  #   "Xcursor.size" = 16;
+  #   "Xft.dpi" = 130;
+  # };
 }
