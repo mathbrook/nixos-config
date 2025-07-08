@@ -2,13 +2,13 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
-{ config, lib, pkgs, ... }:
-let
-  almaBackgrounds = pkgs.runCommand "alma-backgrounds" { } ''
-    mkdir -p $out/share/backgrounds
-    cp ${../alma.jpg} $out/share/backgrounds/alma.jpg
-  '';
-in {
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
+{
   # Enable networking
   networking.networkmanager.enable = true;
   # Set your time zone.
@@ -28,107 +28,26 @@ in {
   };
   # services.xserver.displayManager.lightdm.greeters.gtk.extraConfig = ''user-background = false'';
   services.openssh = {
-  	enable = true;
-  	forwardX11 = true;
+    enable = true;
+    forwardX11 = true;
   };
   services.tailscale.enable = true;
   services.mullvad-vpn.enable = true;
-  # Enable the X11 windowing system
-  services = {
-    xserver = {
-      enable = true;
-      displayManager = {
-        lightdm = {
-          enable = true;
-          background = "${almaBackgrounds}/share/backgrounds/alma.jpg";
-          # greeters.gtk = {
-          #   enable = false;
-          #   # theme = {
-          #   #   name = "WhiteSur-dark-alt-purple";
-          #   #   package = pkgs.whitesur-gtk-theme;
-          #   # };
-          # };
-        };
-        defaultSession = "none+i3";
-        autoLogin = {
-          enable = true;
-          user = "matty";
-        };
-      };
-      # desktopManager = {
-      #   xterm.enable = false;
-      #   xfce = {
-      #     enable = true;
-      #     noDesktop = true;
-      #     enableXfwm = false;
-      #     enableScreensaver = false;
-      #   };
-      # };
-      windowManager.i3 = {
-        enable = true;
-        package = pkgs.i3-gaps;
-        extraPackages = with pkgs; [
-          rofi # application launcher, the same as dmenu
-          dunst # notification daemon
-          i3blocks # status bar
-          # i3lock # default i3 screen locker
-          xss-lock
-          xsecurelock
-          xautolock # lock screen after some time
-          polybar
-          polybar-pulseaudio-control
-          i3status # provide information to i3bar
-          i3-gaps # i3 with gaps
-          # picom # transparency and shadows
-          feh # set wallpaper
-          acpi # battery information
-          arandr # screen layout manager
-          autorandr
-          dex # autostart applications
-          xbindkeys # bind keys to commands
-          xorg.xbacklight # control screen brightness
-          xorg.xdpyinfo # get screen information
-          sysstat # get system information
-        ];
-      };
-      # Configure keymap in X11
-      xkb = {
-        layout = "us";
-        variant = "";
-      };
-    };
-    # Add picom to do transparency in i3 i hope lmao
-    # picom.enable = true;
-
-    # Enable CUPS to print documents.
-    printing.enable = true;
-  };
-  hardware.pulseaudio.enable = false;
-  security.rtkit.enable = true;
-  services.pipewire = {
-    enable = true;
-    alsa.enable = true;
-    alsa.support32Bit = true;
-    pulse.enable = true;
-    # If you want to use JACK applications, uncomment this
-    jack.enable = true;
-
-    # use the example session manager (no others are packaged yet so this is enabled by default,
-    # no need to redefine it in your config for now)
-    #media-session.enable = true;
-  };
-  # Enable touchpad support (enabled default in most desktopManager).
-  # services.xserver.libinput.enable = true;
-
-  # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users.matty = {
     isNormalUser = true;
     description = "matty";
-    extraGroups = [ "networkmanager" "wheel" "input" ];
-    packages = with pkgs;
-      [
-        #  thunderbird
-      ];
+    extraGroups = [
+      "networkmanager"
+      "wheel"
+      "input"
+    ];
+    openssh.authorizedKeys.keys = [
+      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIGWUeixmFX1/A4zBYY89ExPZ1/02egXg+HOpOBKvgfL+ matty@DESKTOP-17ID03O"
+      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIK2JsGOoTTi33HED/8zli99uWpKovHVP00TlR7IxTKw8 mathewos@DESKTOP-17ID03O"
+    ];
+    packages = with pkgs; [
+      #  thunderbird
+    ];
   };
 
   # Workaround for GNOME autologin: https://github.com/NixOS/nixpkgs/issues/103746#issuecomment-945091229
@@ -137,16 +56,14 @@ in {
 
   # Install firefox.
   # programs.hyprland.enable = true;
-  programs.steam = {
-  	enable = true;
-  	remotePlay.openFirewall = true;      # Optional
-  	dedicatedServer.openFirewall = true; # Optional
-  };
+
   programs.firefox.enable = false;
   programs.git = {
     enable = true;
     config = {
-      init = { defaultBranch = "main"; };
+      init = {
+        defaultBranch = "main";
+      };
       user = {
         name = "Matthew Samson";
         email = "mathos.brook@gmail.com";
@@ -162,13 +79,16 @@ in {
   #     { keys = [ 232 ]; events = [ "key" ]; command = "brightnessctl s -5"; }
   #   ];
   # };
-  
+
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
 
   # List packages installed in system profile. To search, run:
   # $ nix search wget
-  nix.settings.experimental-features = [ "nix-command" "flakes" ];
+  nix.settings.experimental-features = [
+    "nix-command"
+    "flakes"
+  ];
   # do garbage collection weekly to keep disk usage low
   nix.gc = {
     automatic = lib.mkDefault true;
@@ -177,13 +97,12 @@ in {
   };
   nix.settings.auto-optimise-store = true;
   nix.settings.trusted-users = [
-  	"matty"
-  	"nixos"
-  	"ubuntu"
-  	"brookie"
+    "matty"
+    "nixos"
+    "ubuntu"
+    "brookie"
   ];
-  nix.channel.enable =
-    false; # remove nix-channel related tools & configs, we use flakes instead.
+  nix.channel.enable = false; # remove nix-channel related tools & configs, we use flakes instead.
 
   environment.systemPackages = with pkgs; [
     #  vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
@@ -191,42 +110,21 @@ in {
     micro # Fuck nano
     tmux # goat
     nixfmt # Format .nix files
-    brave # Browser
-    obsidian # Note taking
-	mullvad-vpn
-    # xdg-desktop-portal
-    # xdg-desktop-portal-gtk # For GTK apps, like GNOME/KDE portals
-    # pulseaudio # Include this so the volume buttons work
-    # window manager
-    # st
-    # sxhkd
-    # termite
-    # picom
+    mullvad-vpn
     neofetch
     # mpv
     ffmpeg
     wmctrl
     wmname
     # python310
-    discord
-    slack
-    vscode
     neovim
     alacritty
     kitty
-	noto-fonts
-	# font-awesome
-	# screenshot utils
-	llvmPackages_20.clang-unwrapped
-	shotgun
-	scrot
-	brightnessctl
-    gscreenshot
-	slurp
-	slop
-	openvpn
-	uv
-	# need a python version for uv since it cannot install on its own on nixos
-	python313
+    noto-fonts
+    # font-awesome
+    # screenshot utils
+    llvmPackages_20.clang-unwrapped
+
+    openvpn
   ];
 }

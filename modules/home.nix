@@ -1,10 +1,16 @@
-{ config, pkgs, ... }: {
+{ config, pkgs, ... }:
+{
   ##################################################################################################################
   #
   # All matty's Home Manager Configuration
   #
   ##################################################################################################################
-  imports = [ ./terminal/kitty.nix ./i3/i3.nix ./media.nix ];
+  imports = [
+    ./terminal/kitty.nix
+    ./i3/i3.nix
+    ./media.nix
+    ./desktop.nix
+  ];
 
   home = {
     username = "matty";

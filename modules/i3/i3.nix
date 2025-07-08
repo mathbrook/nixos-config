@@ -1,4 +1,5 @@
-{ pkgs, config, ... }: {
+{ pkgs, config, ... }:
+{
   # i3 配置，基于 https://github.com/endeavouros-team/endeavouros-i3wm-setup
 
   # wallpaper, binary file

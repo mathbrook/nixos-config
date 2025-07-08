@@ -15,34 +15,56 @@
     };
   };
 
-  outputs = { self, nixpkgs, home-manager, nixos-hardware, ... }@inputs: {
+  outputs =
+    {
+      self,
+      nixpkgs,
+      home-manager,
+      nixos-hardware,
+      ...
+    }@inputs:
+    {
 
-    nixosConfigurations = {
-      virtualbox = nixpkgs.lib.nixosSystem {
-        system = "x86_64-linux";
-        modules = [ ./virtualbox/configuration.nix ./modules/common.nix ];
-      };
-      laptop = nixpkgs.lib.nixosSystem {
-        system = "x86_64-linux";
-        modules = [
-          ./laptop/configuration.nix
-          ./modules/common.nix
-          ./modules/spotify.nix
-		  ./modules/builders.nix
-          nixos-hardware.nixosModules.framework-13-7040-amd
-          home-manager.nixosModules.home-manager
-          {
-            home-manager.useGlobalPkgs = true;
-            home-manager.useUserPackages = true;
-            home-manager.backupFileExtension = "home-manager.backup";
-            home-manager.users.matty = import ./modules/home.nix;
-          }
-        ];
-      };
-      virtualbox-lg = nixpkgs.lib.nixosSystem {
-        system = "x86_64-linux";
-        modules = [ ./virtualbox-lg/configuration.nix ./modules/common.nix ];
+      nixosConfigurations = {
+        virtualbox = nixpkgs.lib.nixosSystem {
+          system = "x86_64-linux";
+          modules = [
+            ./virtualbox/configuration.nix
+            ./modules/common.nix
+          ];
+        };
+        laptop = nixpkgs.lib.nixosSystem {
+          system = "x86_64-linux";
+          modules = [
+            ./laptop/configuration.nix
+            ./modules/common.nix
+            ./modules/spotify.nix
+            ./modules/builders.nix
+            nixos-hardware.nixosModules.framework-13-7040-amd
+            home-manager.nixosModules.home-manager
+            {
+              home-manager.useGlobalPkgs = true;
+              home-manager.useUserPackages = true;
+              home-manager.backupFileExtension = "home-manager.backup";
+              home-manager.users.matty = import ./modules/home.nix;
+            }
+          ];
+        };
+        chonker = nixpkgs.lib.nixosSystem {
+          system = "x86_64-linux";
+          modules = [
+            ./chonker/configuration.nix
+            ./modules/common.nix
+            ./modules/builders.nix
+          ];
+        };
+        virtualbox-lg = nixpkgs.lib.nixosSystem {
+          system = "x86_64-linux";
+          modules = [
+            ./virtualbox-lg/configuration.nix
+            ./modules/common.nix
+          ];
+        };
       };
     };
-  };
 }

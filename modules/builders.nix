@@ -1,4 +1,9 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 
 {
   # Required, otherwise buildMachines are ignored
@@ -15,9 +20,7 @@
       sshKey = "/root/.ssh/nixremote";
       maxJobs = 7;
       # protocol = "ssh-ng";
-      supportedFeatures = [
-        "big-parallel"
-       ];
+      supportedFeatures = [ "big-parallel" ];
     }
   ];
 }

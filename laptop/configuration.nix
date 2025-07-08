@@ -5,8 +5,10 @@
 { config, pkgs, ... }:
 
 {
-  imports = [ # Include the results of the hardware scan.
+  imports = [
+    # Include the results of the hardware scan.
     ./hardware-configuration.nix
+    ../modules/xserver.nix
   ];
 
   environment.systemPackages = with pkgs; [
@@ -28,7 +30,7 @@
   services.fprintd.enable = true;
   # Enable firmware updates
   services.fwupd.enable = true;
-  # Framework recommend turning this on 
+  # Framework recommend turning this on
   services.power-profiles-daemon.enable = true;
   services.tlp.enable = false;
   # Bootloader.
@@ -38,7 +40,6 @@
   networking.hostName = "matty-framework"; # Define your hostname.
   system.stateVersion = "24.11"; # Did you read the comment?
 
-  services.udev.extraRules = ''
-    ACTION=="change", SUBSYSTEM=="drm", RUN+="${pkgs.autorandr}/bin/autorandr -c --match-edid"'';
+  services.udev.extraRules = ''ACTION=="change", SUBSYSTEM=="drm", RUN+="${pkgs.autorandr}/bin/autorandr -c --match-edid"'';
 
 }
