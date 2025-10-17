@@ -33,7 +33,7 @@
     obsidian # Note taking
     discord
     slack
-    vscode
+    vscode-fhs
 
     # add more desktop packages as needed
   ];
