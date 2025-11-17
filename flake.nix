@@ -50,6 +50,24 @@
             }
           ];
         };
+        # Add alias for matty-framework hostname
+        matty-framework = nixpkgs.lib.nixosSystem {
+          system = "x86_64-linux";
+          modules = [
+            ./laptop/configuration.nix
+            ./modules/common.nix
+            ./modules/spotify.nix
+            ./modules/builders.nix
+            nixos-hardware.nixosModules.framework-13-7040-amd
+            home-manager.nixosModules.home-manager
+            {
+              home-manager.useGlobalPkgs = true;
+              home-manager.useUserPackages = true;
+              home-manager.backupFileExtension = "home-manager.backup";
+              home-manager.users.matty = import ./modules/home.nix;
+            }
+          ];
+        };
         chonker = nixpkgs.lib.nixosSystem {
           system = "x86_64-linux";
           modules = [

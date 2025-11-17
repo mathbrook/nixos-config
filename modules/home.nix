@@ -7,7 +7,7 @@
   ##################################################################################################################
   imports = [
     ./terminal/kitty.nix
-    ./i3/i3.nix
+    ./hyprland/hyprland.nix
     ./media.nix
     ./desktop.nix
   ];
@@ -38,7 +38,42 @@
       picom
     ];
     # backupFileExtension = "backup";
+    
+    # Shell aliases
+    shellAliases = {
+      # NixOS rebuild alias - automatically detects hostname for flake derivation
+      nos = "sudo nixos-rebuild switch --flake /home/matty/dev/nixos-config#$(hostname)";
+      
+      # Additional helpful aliases
+      nrs = "sudo nixos-rebuild switch --flake /home/matty/dev/nixos-config#$(hostname)";
+      nrb = "sudo nixos-rebuild boot --flake /home/matty/dev/nixos-config#$(hostname)";
+      nrt = "sudo nixos-rebuild test --flake /home/matty/dev/nixos-config#$(hostname)";
+    };
   };
   programs.home-manager.enable = true;
+
+  # Enable bash with the aliases
+  programs.bash = {
+    enable = true;
+    enableCompletion = true;
+  };
+
+  # GTK configuration
+  gtk = {
+    enable = true;
+    cursorTheme = {
+      package = pkgs.catppuccin-cursors.mochaDark;
+      name = "catppuccin-mocha-dark-cursors";
+      size = 24;
+    };
+  };
+
+  # Home cursor theme (for applications that check home.pointerCursor)
+  home.pointerCursor = {
+    package = pkgs.catppuccin-cursors.mochaDark;
+    name = "catppuccin-mocha-dark-cursors";
+    size = 24;
+    gtk.enable = true;
+  };
 
 }

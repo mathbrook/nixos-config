@@ -1,50 +1,48 @@
-{ config, pkgs, ... }:
+{ config, pkgs, lib, ... }:
 {
-  services.xserver = {
+  # Enable Hyprland
+  programs.hyprland = {
     enable = true;
-    displayManager = {
-      defaultSession = "none+i3";
-      
-      autoLogin = {
-        enable = true;
+    xwayland.enable = true;
+  };
+
+  # Display manager configuration with auto-login to lock screen
+  services.greetd = {
+    enable = true;
+    settings = {
+      default_session = {
+        command = "${pkgs.hyprland}/bin/Hyprland";
         user = "matty";
       };
+    };
+  };
 
-      lightdm = {
-        enable = true;
-        background = "/run/current-system/sw/share/backgrounds/alma.jpg";
-        # You can adjust the path above if you want to use almaBackgrounds
-      };
-    };
-    windowManager.i3 = {
-      enable = true;
-      package = pkgs.i3-gaps;
-      extraPackages = with pkgs; [
-        rofi
-        dunst
-        i3blocks
-        xss-lock
-        xsecurelock
-        xautolock
-        polybar
-        polybar-pulseaudio-control
-        i3status
-        i3-gaps
-        feh
-        acpi
-        arandr
-        autorandr
-        dex
-        xbindkeys
-        xorg.xbacklight
-        xorg.xdpyinfo
-        sysstat
-      ];
-    };
+  # Auto login
+  systemd.services.greetd.serviceConfig = {
+    Type = "idle";
+    StandardInput = "tty";
+    StandardOutput = "tty";
+    StandardError = "journal";
+    TTYReset = true;
+    TTYVHangup = true;
+    TTYVTDisallocate = true;
+  };
+
+  # XDG Desktop Portal for screen sharing and file picker
+  xdg.portal = {
+    enable = true;
+    extraPortals = with pkgs; [
+      xdg-desktop-portal-hyprland
+      xdg-desktop-portal-gtk
+    ];
+  };
+
+  # Keyboard layout
+  services.xserver = {
+    enable = true;
     xkb = {
       layout = "us";
       variant = "";
     };
   };
-  # Add any other graphical system services here (e.g., printing, picom, etc.)
 }

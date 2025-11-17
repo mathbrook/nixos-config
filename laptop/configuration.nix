@@ -9,7 +9,11 @@
     # Include the results of the hardware scan.
     ./hardware-configuration.nix
     ../modules/xserver.nix
+    ../modules/docker.nix
   ];
+
+  # Enable Docker and add users to docker group
+  docker.users = [ "matty" ];
 
   environment.systemPackages = with pkgs; [
     libinput
@@ -17,11 +21,11 @@
     libinput-gestures
 
   ];
-  services.xserver.libinput.enable = true;
-  # services.xserver.libinput-gestures.enable = true;
 
-  services.xserver.libinput.naturalScrolling = true;
-  services.xserver.libinput.horizontalScrolling = true;
+  # Libinput configuration (moved from services.xserver.libinput)
+  services.libinput.enable = true;
+  services.libinput.touchpad.naturalScrolling = true;
+  services.libinput.touchpad.horizontalScrolling = true;
 
   # Track the latest Linux kernel release for improved hardware support
   boot.kernelPackages = pkgs.linuxPackages_latest;
@@ -42,7 +46,7 @@
 
   services.udev.extraRules = ''ACTION=="change", SUBSYSTEM=="drm", RUN+="${pkgs.autorandr}/bin/autorandr -c --match-edid"'';
   # Audio and pipewire config for desktop systems
-  hardware.pulseaudio.enable = false;
+  services.pulseaudio.enable = false;
   security.rtkit.enable = true;
   services.pipewire = {
     enable = true;

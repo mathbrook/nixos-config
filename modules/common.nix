@@ -29,10 +29,18 @@
   # services.xserver.displayManager.lightdm.greeters.gtk.extraConfig = ''user-background = false'';
   services.openssh = {
     enable = true;
-    forwardX11 = true;
+    settings.X11Forwarding = true;
   };
   services.tailscale.enable = true;
   services.mullvad-vpn.enable = true;
+  programs.ssh.startAgent = true;
+
+  # Enable polkit for authentication
+  security.polkit.enable = true;
+
+  # Enable libinput for touchpad gestures
+  services.libinput.enable = true;
+
   users.users.matty = {
     isNormalUser = true;
     description = "matty";
@@ -40,6 +48,7 @@
       "networkmanager"
       "wheel"
       "input"
+      "video"
     ];
     openssh.authorizedKeys.keys = [
       "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIGWUeixmFX1/A4zBYY89ExPZ1/02egXg+HOpOBKvgfL+ matty@DESKTOP-17ID03O"
@@ -109,7 +118,7 @@
     wget # Get things
     micro # Fuck nano
     tmux # goat
-    nixfmt # Format .nix files
+    nixfmt-classic # Format .nix files
     mullvad-vpn
     neofetch
     # mpv
