@@ -56,6 +56,7 @@
     ];
     packages = with pkgs; [
       #  thunderbird
+      
     ];
   };
 
@@ -117,6 +118,7 @@
     #  vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
     wget # Get things
     micro # Fuck nano
+    socat
     tmux # goat
     nixfmt-classic # Format .nix files
     mullvad-vpn
@@ -126,6 +128,7 @@
     wmctrl
     wmname
     # python310
+    jq
     neovim
     alacritty
     kitty

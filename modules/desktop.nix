@@ -82,7 +82,9 @@
     playerctl
     pavucontrol
     networkmanagerapplet
-    
+    # Signal + exporter
+	signal-desktop
+	sigtop    
     # Applications
     brave # Browser
     obsidian # Note taking

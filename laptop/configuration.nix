@@ -10,16 +10,25 @@
     ./hardware-configuration.nix
     ../modules/xserver.nix
     ../modules/docker.nix
+    ../modules/rtl-sdr.nix
   ];
 
   # Enable Docker and add users to docker group
   docker.users = [ "matty" ];
 
+  # Enable RTL-SDR support
+  rtl-sdr = {
+    enable = true;
+    users = [ "matty" ];
+  };
+
   environment.systemPackages = with pkgs; [
     libinput
     # still does not work!
     libinput-gestures
-
+    # iPod/iOS device support
+    libimobiledevice
+    ifuse
   ];
 
   # Libinput configuration (moved from services.xserver.libinput)
@@ -30,18 +39,42 @@
   # Track the latest Linux kernel release for improved hardware support
   boot.kernelPackages = pkgs.linuxPackages_latest;
 
+  # Enable binfmt for ARM64 emulation
+  boot.binfmt.emulatedSystems = [ "aarch64-linux" ];
+  boot.binfmt.registrations.aarch64-linux = {
+    fixBinary = true;
+  };
+
   # Enable fingerprint reader support
   services.fprintd.enable = true;
   # Enable firmware updates
   services.fwupd.enable = true;
+  # Enable usbmuxd for iPod/iOS device support
+  services.usbmuxd.enable = true;
   # Framework recommend turning this on
   services.power-profiles-daemon.enable = true;
+  # Suwayomi server for manga
+  services.suwayomi-server = {
+    enable = true;
+    settings.server.port = 4567;
+  };
   services.tlp.enable = false;
   # Bootloader.
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
   networking.hostName = "matty-framework"; # Define your hostname.
+
+  # Open firewall for port-forward-to-office.sh ports
+  networking.firewall.allowedTCPPorts = [
+    # Cassette container ports
+    8080 8081 8082 8083 6969 8086 8090 8787 8788 8802 9082
+    # Emitter container ports
+    8087 8088
+    # SSH forwards
+    2023 2024
+  ];
+
   system.stateVersion = "24.11"; # Did you read the comment?
 
   services.udev.extraRules = ''ACTION=="change", SUBSYSTEM=="drm", RUN+="${pkgs.autorandr}/bin/autorandr -c --match-edid"'';
