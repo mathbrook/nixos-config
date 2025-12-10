@@ -35,6 +35,14 @@
   services.mullvad-vpn.enable = true;
   programs.ssh.startAgent = true;
 
+  # Enable udev rules for STLink programmers
+  services.udev.packages = [ pkgs.stlink ];
+
+  # Enable USB auto-mounting
+  services.udisks2.enable = true;
+  services.devmon.enable = true;
+  services.gvfs.enable = true; # For trash support and mounting archives
+
   # Enable polkit for authentication
   security.polkit.enable = true;
 
