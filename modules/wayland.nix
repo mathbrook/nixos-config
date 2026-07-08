@@ -28,14 +28,12 @@
     swappy        # Annotation tool for screenshots
     
     # File manager
-    xfce.thunar              # Lightweight file manager
-    xfce.thunar-volman       # Automatic management of removable drives
-    xfce.thunar-archive-plugin  # Archive support
+    thunar                   # Lightweight file manager
+    thunar-volman            # Automatic management of removable drives
+    thunar-archive-plugin    # Archive support
+    tumbler                  # Thumbnail service for Thunar image previews
     
     # Eye candy and productivity
-    swaybg              # Alternative wallpaper daemon (can do multiple monitors differently)
-    swayidle            # Idle management daemon
-    swaylock-effects    # Lock screen with cool effects
     wlogout             # Logout menu with icons
     wev                 # Wayland event viewer (debug key bindings)
     
@@ -49,7 +47,6 @@
     cliphist            # Clipboard history manager
     
     # System monitoring
-    btop                # Better top (modern system monitor)
     nvtopPackages.full  # GPU monitoring (nvidia/amd/intel)
     
     # Terminal tools
@@ -71,16 +68,10 @@
     nerd-fonts.jetbrains-mono  # JetBrains Mono Nerd Font (used in terminal and UI)
     nerd-fonts.symbols-only    # Just the icon glyphs
 
-    # Cursor theme
-    catppuccin-cursors.mochaDark  # Catppuccin cursor theme matching Mocha color scheme
-    
     # Other utilities
-    xdg-utils
     feh
     acpi
     brightnessctl
-    playerctl
-    pavucontrol
     networkmanagerapplet
     # Signal + exporter
 	signal-desktop
@@ -91,14 +82,22 @@
     discord
     slack
     vscode-fhs
-    foxglove-studio    
+    foxglove-studio
+    zoom-us    
+    # 3D printing
+    bambu-studio  # Bambu Lab slicer with GUI
+
     # Image editors
     gimp          # Full-featured image editor (like Photoshop)
     krita         # Digital painting and drawing
     # pinta       # Simple paint program (like MS Paint) - uncomment if you prefer something simpler
 
+    # Office suite
+    libreoffice-qt-fresh  # LibreOffice with Qt frontend
+
     # AI slop
     claude-code
+    mcp-nixos
 
   ];
   

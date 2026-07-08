@@ -16,10 +16,11 @@
   # Enable Docker and add users to docker group
   docker.users = [ "matty" ];
 
-  # Enable RTL-SDR support
+  # Enable RTL-SDR support (without GUI software to avoid CUDA dependencies)
   rtl-sdr = {
     enable = true;
     users = [ "matty" ];
+    installSdrSoftware = false;  # Disable GQRX to avoid CUDA/gr-osmosdr issues
   };
 
   environment.systemPackages = with pkgs; [
@@ -58,7 +59,22 @@
     enable = true;
     settings.server.port = 4567;
   };
+  # FlareSolverr for bypassing Cloudflare protection
+  services.flaresolverr = {
+    enable = true;
+    port = 8191;
+  };
   services.tlp.enable = false;
+
+  # Bluetooth
+  hardware.bluetooth.enable = true;
+  services.blueman.enable = true;
+
+  # Suspend on lid close
+  services.logind.settings.Login = {
+    HandleLidSwitch = "suspend";
+    HandleLidSwitchExternalPower = "suspend";
+  };
   # Bootloader.
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
@@ -73,7 +89,16 @@
     8087 8088
     # SSH forwards
     2023 2024
+    # Additional port
+    3000
   ];
+
+  # Work VPN — starts at boot; manage with: systemctl {start,stop,status} openvpn-work
+  # Place your .ovpn file at /etc/openvpn/work.ovpn before rebuilding.
+  services.openvpn.servers.work = {
+    config = "config /etc/openvpn/work.ovpn";
+    autoStart = true;
+  };
 
   system.stateVersion = "24.11"; # Did you read the comment?
 

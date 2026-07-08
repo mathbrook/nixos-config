@@ -272,8 +272,9 @@
   # Hyprpaper config for wallpaper
   home.file.".config/hypr/hyprpaper.conf" = {
     text = ''
-      preload = ~/.config/hypr/wallpaper.jpg
-      wallpaper = ,~/.config/hypr/wallpaper.jpg
+      preload = ${config.home.homeDirectory}/.config/hypr/wallpaper.jpg
+      wallpaper = eDP-1,${config.home.homeDirectory}/.config/hypr/wallpaper.jpg
+      wallpaper = DP-3,${config.home.homeDirectory}/.config/hypr/wallpaper.jpg
       splash = false
     '';
     force = true;
@@ -636,13 +637,7 @@
 
   # Keep libinput gestures config
   home.file.".config/libinput-gestures/libinput-gestures.conf" = {
-    source = ../i3/libinput-gestures.conf;
+    source = ./libinput-gestures.conf;
     force = true;
-  };
-
-  # Set cursor size and dpi for 4k monitor
-  xresources.properties = {
-    "Xcursor.size" = 16;
-    "Xft.dpi" = 130;
   };
 }

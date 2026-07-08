@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+{ config, pkgs, lib, ... }:
 {
   ##################################################################################################################
   #
@@ -9,7 +9,8 @@
     ./terminal/kitty.nix
     ./hyprland/hyprland.nix
     ./media.nix
-    ./desktop.nix
+    ./wayland.nix
+    ./shell.nix
   ];
 
   home = {
@@ -34,28 +35,43 @@
       ethtool
       pciutils # lspci
       usbutils # lsusb
-      glxinfo
+      mesa-demos # includes glxinfo
       picom
     ];
     # backupFileExtension = "backup";
-    
-    # Shell aliases
-    shellAliases = {
-      # NixOS rebuild alias - automatically detects hostname for flake derivation
-      nos = "sudo nixos-rebuild switch --flake /home/matty/dev/nixos-config#$(hostname)";
-      
-      # Additional helpful aliases
-      nrs = "sudo nixos-rebuild switch --flake /home/matty/dev/nixos-config#$(hostname)";
-      nrb = "sudo nixos-rebuild boot --flake /home/matty/dev/nixos-config#$(hostname)";
-      nrt = "sudo nixos-rebuild test --flake /home/matty/dev/nixos-config#$(hostname)";
-    };
   };
   programs.home-manager.enable = true;
 
-  # Enable bash with the aliases
-  programs.bash = {
+  programs.ssh = {
     enable = true;
-    enableCompletion = true;
+    matchBlocks = {
+      "emitter-*" = {
+        extraOptions = {
+          StrictHostKeyChecking = "no";
+          UserKnownHostsFile = "/dev/null";
+        };
+      };
+      "cassette-*" = {
+        extraOptions = {
+          StrictHostKeyChecking = "no";
+          UserKnownHostsFile = "/dev/null";
+        };
+      };
+    };
+  };
+
+  # SSH config is symlinked to the Nix store (read-only, 0777), which SSH rejects.
+  # Copy the store file to a real mutable file with correct permissions.
+  home.activation.fixSshConfig = lib.hm.dag.entryAfter ["writeBoundary"] ''
+    $DRY_RUN_CMD cp --remove-destination $(readlink -f ${config.home.homeDirectory}/.ssh/config) ${config.home.homeDirectory}/.ssh/config
+    $DRY_RUN_CMD chmod 600 ${config.home.homeDirectory}/.ssh/config
+  '';
+
+
+  # Cursor size and DPI for HiDPI monitors
+  xresources.properties = {
+    "Xcursor.size" = 16;
+    "Xft.dpi" = 130;
   };
 
   # GTK configuration
@@ -75,5 +91,6 @@
     size = 24;
     gtk.enable = true;
   };
+
 
 }

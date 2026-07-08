@@ -49,9 +49,12 @@
   # Enable libinput for touchpad gestures
   services.libinput.enable = true;
 
+  programs.zsh.enable = true;
+
   users.users.matty = {
     isNormalUser = true;
     description = "matty";
+    shell = pkgs.zsh;
     extraGroups = [
       "networkmanager"
       "wheel"
@@ -127,22 +130,12 @@
     wget # Get things
     micro # Fuck nano
     socat
-    tmux # goat
-    nixfmt-classic # Format .nix files
+    nixfmt # Format .nix files
     mullvad-vpn
-    neofetch
-    # mpv
     ffmpeg
     wmctrl
-    wmname
-    # python310
-    jq
     neovim
-    alacritty
-    kitty
     noto-fonts
-    # font-awesome
-    # screenshot utils
     llvmPackages_20.clang-unwrapped
 
     openvpn
