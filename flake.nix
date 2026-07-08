@@ -1,20 +1,88 @@
 {
-  description = "A simple NixOS flake";
+  description = "NixOS config for my computers :3c";
 
   inputs = {
-    # NixOS official package source, using the nixos-24.11 branch here
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-24.11";
-  };
-
-  outputs = { self, nixpkgs, ... }@inputs: {
-    # Please replace nixos with your hostname
-    nixosConfigurations.nixos = nixpkgs.lib.nixosSystem {
-      system = "x86_64-linux";
-      modules = [
-        # Import the previous configuration.nix we used,
-        # so the old configuration file still takes effect
-        ./configuration.nix
-      ];
+    # NixOS official package source, using nixos-unstable. Scary!
+    nixpkgs.url = "github:NixOS/nixpkgs?ref=nixos-unstable";
+    nixos-hardware.url = "github:NixOS/nixos-hardware/master";
+    home-manager = {
+      url = "github:nix-community/home-manager/";
+      # The `follows` keyword in inputs is used for inheritance.
+      # Here, `inputs.nixpkgs` of home-manager is kept consistent with
+      # the `inputs.nixpkgs` of the current flake,
+      # to avoid problems caused by different versions of nixpkgs.
+      inputs.nixpkgs.follows = "nixpkgs";
     };
   };
+
+  outputs =
+    {
+      self,
+      nixpkgs,
+      home-manager,
+      nixos-hardware,
+      ...
+    }@inputs:
+    {
+
+      nixosConfigurations = {
+        virtualbox = nixpkgs.lib.nixosSystem {
+          system = "x86_64-linux";
+          modules = [
+            ./virtualbox/configuration.nix
+            ./modules/common.nix
+          ];
+        };
+        laptop = nixpkgs.lib.nixosSystem {
+          system = "x86_64-linux";
+          modules = [
+            ./laptop/configuration.nix
+            ./modules/common.nix
+            ./modules/spotify.nix
+            ./modules/builders.nix
+            nixos-hardware.nixosModules.framework-13-7040-amd
+            home-manager.nixosModules.home-manager
+            {
+              home-manager.useGlobalPkgs = true;
+              home-manager.useUserPackages = true;
+              home-manager.backupFileExtension = "home-manager.backup";
+              home-manager.users.matty = import ./modules/home.nix;
+            }
+          ];
+        };
+        # Add alias for matty-framework hostname
+        matty-framework = nixpkgs.lib.nixosSystem {
+          system = "x86_64-linux";
+          modules = [
+            ./laptop/configuration.nix
+            ./modules/common.nix
+            ./modules/spotify.nix
+            ./modules/builders.nix
+            nixos-hardware.nixosModules.framework-13-7040-amd
+            home-manager.nixosModules.home-manager
+            {
+              home-manager.useGlobalPkgs = true;
+              home-manager.useUserPackages = true;
+              home-manager.backupFileExtension = "home-manager.backup";
+              home-manager.users.matty = import ./modules/home.nix;
+            }
+          ];
+        };
+        chonker = nixpkgs.lib.nixosSystem {
+          system = "x86_64-linux";
+          modules = [
+            ./chonker/configuration.nix
+            ./modules/common.nix
+            ./modules/builders.nix
+          ];
+        };
+        virtualbox-lg = nixpkgs.lib.nixosSystem {
+          system = "x86_64-linux";
+          modules = [
+            ./virtualbox-lg/configuration.nix
+            ./modules/common.nix
+          ];
+        };
+      };
+    };
 }
