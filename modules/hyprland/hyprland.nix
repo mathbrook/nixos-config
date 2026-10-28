@@ -18,17 +18,17 @@
   home.file.".config/hypr/scripts/screenshot.sh" = {
     text = ''
       #!/usr/bin/env bash
-      
+
       # Screenshot directory
       DIR="$HOME/Pictures/Screenshots"
       mkdir -p "$DIR"
-      
+
       # Filename with timestamp
       FILE="$DIR/screenshot_$(date +%Y%m%d_%H%M%S).png"
-      
+
       # Show menu with rofi
       choice=$(echo -e "󰹑 Select Area\n󰍹 Full Screen\n󰍹 Current Window\n Edit Last" | rofi -dmenu -i -p "Screenshot" -theme-str 'window {width: 250px;} listview {lines: 4;}')
-      
+
       case "$choice" in
         *"Select Area")
           grimblast --notify copysave area "$FILE"
@@ -56,14 +56,14 @@
   home.file.".config/hypr/scripts/record.sh" = {
     text = ''
       #!/usr/bin/env bash
-      
+
       # Recording directory
       DIR="$HOME/Videos/Recordings"
       mkdir -p "$DIR"
-      
+
       # PID file
       PIDFILE="/tmp/wf-recorder.pid"
-      
+
       if [ -f "$PIDFILE" ]; then
         # Stop recording
         kill $(cat "$PIDFILE")
@@ -94,7 +94,7 @@
         display-ssh: "   SSH";
         sidebar-mode: true;
       }
-      
+
       @theme "~/.config/rofi/theme.rasi"
     '';
   };
@@ -230,7 +230,7 @@
   home.file.".config/hypr/scripts/lid-handler.sh" = {
     text = ''
       #!/usr/bin/env bash
-      
+
       handle() {
         case $1 in
           monitorremoved*|monitoradded*)
@@ -252,7 +252,7 @@
             ;;
         esac
       }
-      
+
       # Listen to Hyprland socket for events
       socat -U - UNIX-CONNECT:/tmp/hypr/$HYPRLAND_INSTANCE_SIGNATURE/.socket2.sock | while read -r line; do
         handle "$line"
@@ -261,8 +261,6 @@
     executable = true;
   };
 
-
-
   # Kanshi config for automatic monitor management
   home.file.".config/kanshi/config" = {
     source = ./kanshi.conf;
@@ -270,14 +268,19 @@
   };
 
   # Hyprpaper config for wallpaper
-  home.file.".config/hypr/hyprpaper.conf" = {
-    text = ''
-      preload = ${config.home.homeDirectory}/.config/hypr/wallpaper.jpg
-      wallpaper = eDP-1,${config.home.homeDirectory}/.config/hypr/wallpaper.jpg
-      wallpaper = DP-3,${config.home.homeDirectory}/.config/hypr/wallpaper.jpg
-      splash = false
-    '';
-    force = true;
+  services.hyprpaper = {
+    enable = true;
+    settings = {
+      preload = [
+        "${config.home.homeDirectory}/.config/hypr/wallpaper.jpg"
+      ];
+      wallpaper = [
+        {
+          monitor = "";
+          path = "${config.home.homeDirectory}/.config/hypr/wallpaper.jpg";
+        }
+      ];
+    };
   };
 
   # Hypridle config for screen locking

@@ -8,27 +8,27 @@
 
   home.packages = with pkgs; [
     # Core search and navigation
-    fzf           # Fuzzy finder
-    ripgrep       # Fast grep alternative (rg)
+    fzf # Fuzzy finder
+    ripgrep # Fast grep alternative (rg)
 
     # Modern CLI replacements
-    bat           # Better cat with syntax highlighting
-    eza           # Better ls with colors and git integration
-    fd            # Better find
-    zoxide        # Smarter cd that learns your habits
-    dust          # Better du (disk usage)
-    duf           # Better df (disk free)
+    bat # Better cat with syntax highlighting
+    eza # Better ls with colors and git integration
+    fd # Better find
+    zoxide # Smarter cd that learns your habits
+    dust # Better du (disk usage)
+    duf # Better df (disk free)
 
     # Git enhancements
-    delta         # Beautiful diff viewer
-    lazygit       # Terminal UI for git
-    gh            # GitHub CLI
+    delta # Beautiful diff viewer
+    lazygit # Terminal UI for git
+    gh # GitHub CLI
 
     # Additional useful tools
-    jq            # JSON processor
-    yq            # YAML processor
-    htop          # Process viewer
-    tree          # Directory tree viewer
+    jq # JSON processor
+    yq # YAML processor
+    htop # Process viewer
+    tree # Directory tree viewer
   ];
 
   # Zsh configuration
@@ -181,6 +181,31 @@
         symbol = " ";
         format = "via [$symbol$state]($style) ";
       };
+
+      # Hide gcloud account/project from prompt (cosmetic only; gcloud CLI unaffected)
+      gcloud.disabled = true;
+
+      # Battery indicator in its place
+      battery = {
+        format = "[$symbol$percentage]($style) ";
+        full_symbol = "🔋";
+        charging_symbol = "⚡";
+        discharging_symbol = "🪫";
+        display = [
+          {
+            threshold = 30;
+            style = "bold red";
+          }
+          {
+            threshold = 60;
+            style = "bold yellow";
+          }
+          {
+            threshold = 100;
+            style = "bold green";
+          }
+        ];
+      };
     };
   };
 
@@ -205,6 +230,13 @@
     enableZshIntegration = true;
   };
 
+  # direnv - auto-load per-directory environments (e.g. `use flake` in .envrc)
+  programs.direnv = {
+    enable = true;
+    enableZshIntegration = true;
+    nix-direnv.enable = true;
+  };
+
   # Tmux configuration
   programs.tmux = {
     enable = true;
@@ -213,13 +245,13 @@
     historyLimit = 50000;
     keyMode = "vi";
     mouse = true;
-    baseIndex = 1;           # Start windows/panes at 1, not 0
-    escapeTime = 0;          # No delay for escape key (important for vim)
+    baseIndex = 1; # Start windows/panes at 1, not 0
+    escapeTime = 0; # No delay for escape key (important for vim)
     aggressiveResize = true;
 
     plugins = with pkgs.tmuxPlugins; [
-      sensible              # Sane defaults
-      yank                  # Copy to system clipboard
+      sensible # Sane defaults
+      yank # Copy to system clipboard
       {
         plugin = catppuccin;
         extraConfig = ''
@@ -230,11 +262,11 @@
         '';
       }
       {
-        plugin = resurrect;  # Save/restore sessions
+        plugin = resurrect; # Save/restore sessions
         extraConfig = "set -g @resurrect-capture-pane-contents 'on'";
       }
       {
-        plugin = continuum;  # Auto-save sessions every 15 min
+        plugin = continuum; # Auto-save sessions every 15 min
         extraConfig = ''
           set -g @continuum-restore 'on'
           set -g @continuum-save-interval '15'
@@ -334,9 +366,12 @@
       gui = {
         theme = {
           lightTheme = false;
-          activeBorderColor = ["#89b4fa" "bold"];
-          inactiveBorderColor = ["#a6adc8"];
-          selectedLineBgColor = ["#313244"];
+          activeBorderColor = [
+            "#89b4fa"
+            "bold"
+          ];
+          inactiveBorderColor = [ "#a6adc8" ];
+          selectedLineBgColor = [ "#313244" ];
         };
       };
     };

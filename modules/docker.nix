@@ -1,12 +1,20 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 
 {
   options = {
     docker.users = lib.mkOption {
       type = lib.types.listOf lib.types.str;
-      default = [];
+      default = [ ];
       description = "List of users to add to the docker group";
-      example = [ "matty" "otheruser" ];
+      example = [
+        "matty"
+        "otheruser"
+      ];
     };
   };
 

@@ -60,6 +60,7 @@
       "wheel"
       "input"
       "video"
+      "dialout"
     ];
     openssh.authorizedKeys.keys = [
       "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIGWUeixmFX1/A4zBYY89ExPZ1/02egXg+HOpOBKvgfL+ matty@DESKTOP-17ID03O"
@@ -67,7 +68,7 @@
     ];
     packages = with pkgs; [
       #  thunderbird
-      
+
     ];
   };
 
@@ -132,6 +133,7 @@
     socat
     nixfmt # Format .nix files
     mullvad-vpn
+    google-chrome
     ffmpeg
     wmctrl
     neovim

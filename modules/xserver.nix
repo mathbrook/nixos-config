@@ -1,9 +1,23 @@
-{ config, pkgs, lib, ... }:
+{
+  config,
+  pkgs,
+  lib,
+  ...
+}:
 {
   # Enable Hyprland
   programs.hyprland = {
     enable = true;
     xwayland.enable = true;
+    withUWSM = true;
+  };
+
+  # UWSM session wiring so systemd's graphical-session.target actually
+  # activates (needed for xdg-desktop-portal, hyprpaper.service, etc.)
+  programs.uwsm.waylandCompositors.hyprland = {
+    prettyName = "Hyprland";
+    comment = "Hyprland compositor managed by UWSM";
+    binPath = "/run/current-system/sw/bin/Hyprland";
   };
 
   # Display manager configuration with auto-login to lock screen
@@ -11,7 +25,7 @@
     enable = true;
     settings = {
       default_session = {
-        command = "start-hyprland";
+        command = "${pkgs.uwsm}/bin/uwsm start -F -- /run/current-system/sw/bin/Hyprland";
         user = "matty";
       };
     };
