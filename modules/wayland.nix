@@ -54,10 +54,6 @@
     tty-clock # Terminal clock
     cmatrix # Matrix effect in terminal
 
-    # Productivity
-    ulauncher # Alternative app launcher with plugins
-    clipman # Another clipboard manager option
-
     # File previews in terminal
     ranger # Terminal file manager with preview
     ueberzugpp # Image preview in terminal

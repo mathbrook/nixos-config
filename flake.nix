@@ -19,13 +19,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    spotifast = {
-      url = "github:crmne/spotifast";
-      # Keep spotifast on our nixpkgs so we don't build/download a second
-      # copy of the whole package set just for one app.
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
     sops-nix = {
       url = "github:Mic92/sops-nix";
       inputs.nixpkgs.follows = "nixpkgs";

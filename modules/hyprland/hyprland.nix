@@ -226,6 +226,26 @@
     executable = true;
   };
 
+  # Airplane-mode key handler. Deliberately does NOT toggle any radio: the key
+  # is trivially easy to fuzz-press on this keyboard, and a stray press used to
+  # leave bluetooth soft-blocked with no obvious cause. Instead we actively
+  # unblock everything and show a notification.
+  home.file.".config/hypr/scripts/airplane.sh" = {
+    text = ''
+      #!/usr/bin/env bash
+      # Undo anything the kernel may have blocked before hyprland saw the key.
+      ${pkgs.util-linux}/bin/rfkill unblock all 2>/dev/null
+
+      ${pkgs.libnotify}/bin/notify-send \
+        -a "Air Traffic Control" \
+        -i network-wireless \
+        -t 3000 \
+        "✈️  Nice try" \
+        "This aircraft is not equipped for airplane mode. Radios remain on — enjoy your flight."
+    '';
+    executable = true;
+  };
+
   # Lid switch handler to move workspaces to external monitor
   home.file.".config/hypr/scripts/lid-handler.sh" = {
     text = ''
@@ -346,6 +366,27 @@
       }
     '';
     force = true;
+  };
+
+  # Run waybar under systemd rather than hyprland's `exec-once`, so that if it
+  # ever dies it comes back on its own instead of leaving you with no bar until
+  # the next login. Reuses the hand-written config/style.css below.
+  systemd.user.services.waybar = {
+    Unit = {
+      Description = "Waybar status bar";
+      PartOf = [ "graphical-session.target" ];
+      After = [ "graphical-session.target" ];
+      # Don't try to start on a TTY-only session.
+      ConditionEnvironment = "WAYLAND_DISPLAY";
+    };
+    Service = {
+      ExecStart = "${pkgs.waybar}/bin/waybar";
+      # SIGUSR2 makes waybar reload its config in place.
+      ExecReload = "${pkgs.coreutils}/bin/kill -SIGUSR2 $MAINPID";
+      Restart = "on-failure";
+      RestartSec = 2;
+    };
+    Install.WantedBy = [ "graphical-session.target" ];
   };
 
   # Waybar config

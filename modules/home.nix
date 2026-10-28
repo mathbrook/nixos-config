@@ -42,7 +42,6 @@
       pciutils # lspci
       usbutils # lsusb
       mesa-demos # includes glxinfo
-      picom
     ];
     # backupFileExtension = "backup";
   };
