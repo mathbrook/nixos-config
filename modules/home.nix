@@ -1,4 +1,9 @@
-{ config, pkgs, lib, ... }:
+{
+  config,
+  pkgs,
+  lib,
+  ...
+}:
 {
   ##################################################################################################################
   #
@@ -19,6 +24,7 @@
     stateVersion = "24.11";
     packages = with pkgs; [
       xdg-utils
+      nodejs # needed on PATH for claude code plugin lifecycle hooks (e.g. ponytail)
 
       btop # replacement of htop/nmon
       iotop # io monitoring
@@ -44,29 +50,36 @@
 
   programs.ssh = {
     enable = true;
-    matchBlocks = {
+
+    # Opt out of home-manager's implicit `Host *` defaults and declare the
+    # ones we actually want below, so upstream default changes can't surprise us.
+    enableDefaultConfig = false;
+
+    settings = {
+      "*" = {
+        UserKnownHostsFile = "~/.ssh/known_hosts";
+        ServerAliveCountMax = 3;
+        ControlPath = "~/.ssh/master-%r@%n:%p";
+      };
+
+      # Lab/test machines are reimaged constantly, so their host keys churn.
       "emitter-*" = {
-        extraOptions = {
-          StrictHostKeyChecking = "no";
-          UserKnownHostsFile = "/dev/null";
-        };
+        StrictHostKeyChecking = "no";
+        UserKnownHostsFile = "/dev/null";
       };
       "cassette-*" = {
-        extraOptions = {
-          StrictHostKeyChecking = "no";
-          UserKnownHostsFile = "/dev/null";
-        };
+        StrictHostKeyChecking = "no";
+        UserKnownHostsFile = "/dev/null";
+      };
+
+      oxos-test-server = {
+        HostName = "oxos-test-server";
+        User = "microc";
+        ForwardX11Trusted = true;
+        ForwardAgent = true;
       };
     };
   };
-
-  # SSH config is symlinked to the Nix store (read-only, 0777), which SSH rejects.
-  # Copy the store file to a real mutable file with correct permissions.
-  home.activation.fixSshConfig = lib.hm.dag.entryAfter ["writeBoundary"] ''
-    $DRY_RUN_CMD cp --remove-destination $(readlink -f ${config.home.homeDirectory}/.ssh/config) ${config.home.homeDirectory}/.ssh/config
-    $DRY_RUN_CMD chmod 600 ${config.home.homeDirectory}/.ssh/config
-  '';
-
 
   # Cursor size and DPI for HiDPI monitors
   xresources.properties = {
@@ -77,20 +90,38 @@
   # GTK configuration
   gtk = {
     enable = true;
+    theme = {
+      package = pkgs.catppuccin-gtk.override {
+        accents = [ "blue" ];
+        size = "standard";
+        tweaks = [ "rimless" ];
+        variant = "mocha";
+      };
+      name = "catppuccin-mocha-blue-standard+rimless";
+    };
     cursorTheme = {
       package = pkgs.catppuccin-cursors.mochaDark;
       name = "catppuccin-mocha-dark-cursors";
       size = 24;
     };
+    # Keep the legacy behaviour of theming GTK4 with the GTK3 theme above.
+    # (Upstream's new default is null; being explicit silences the warning.)
+    gtk4.theme = config.gtk.theme;
+    gtk3.extraConfig = {
+      gtk-application-prefer-dark-theme = 1;
+    };
+    gtk4.extraConfig = {
+      gtk-application-prefer-dark-theme = 1;
+    };
   };
 
   # Home cursor theme (for applications that check home.pointerCursor)
   home.pointerCursor = {
+    enable = true;
     package = pkgs.catppuccin-cursors.mochaDark;
     name = "catppuccin-mocha-dark-cursors";
     size = 24;
     gtk.enable = true;
   };
-
 
 }

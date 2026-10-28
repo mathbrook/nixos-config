@@ -4,69 +4,68 @@
   home.packages = with pkgs; [
     # Wayland/Hyprland packages
     waybar
-    rofi  # Application launcher (now supports both X11 and Wayland)
+    rofi # Application launcher (now supports both X11 and Wayland)
     dunst
-    hyprpaper
     hypridle
     hyprlock
     hyprpicker
     kanshi
-    
+
     # Monitor configuration GUI tools
-    wdisplays      # GUI for Wayland display configuration
-    nwg-displays   # Alternative GUI tool for wlroots compositors
-    
+    wdisplays # GUI for Wayland display configuration
+    nwg-displays # Alternative GUI tool for wlroots compositors
+
     # Wayland utilities
     wl-clipboard
     wlr-randr
     wayland-utils
-    
+
     # Screenshot tools for Wayland
-    grim          # Screenshot utility
-    slurp         # Region selector
-    grimblast     # Convenient wrapper around grim and slurp
-    swappy        # Annotation tool for screenshots
-    
+    grim # Screenshot utility
+    slurp # Region selector
+    grimblast # Convenient wrapper around grim and slurp
+    swappy # Annotation tool for screenshots
+
     # File manager
-    thunar                   # Lightweight file manager
-    thunar-volman            # Automatic management of removable drives
-    thunar-archive-plugin    # Archive support
-    tumbler                  # Thumbnail service for Thunar image previews
-    
+    thunar # Lightweight file manager
+    thunar-volman # Automatic management of removable drives
+    thunar-archive-plugin # Archive support
+    tumbler # Thumbnail service for Thunar image previews
+
     # Eye candy and productivity
-    wlogout             # Logout menu with icons
-    wev                 # Wayland event viewer (debug key bindings)
-    
+    wlogout # Logout menu with icons
+    wev # Wayland event viewer (debug key bindings)
+
     # Notifications enhancement
-    libnotify           # Send notifications from terminal
-    
+    libnotify # Send notifications from terminal
+
     # Color picker and screen tools
-    wf-recorder         # Screen recorder for Wayland
-    
+    wf-recorder # Screen recorder for Wayland
+
     # Clipboard manager
-    cliphist            # Clipboard history manager
-    
+    cliphist # Clipboard history manager
+
     # System monitoring
-    nvtopPackages.full  # GPU monitoring (nvidia/amd/intel)
-    
+    nvtopPackages.full # GPU monitoring (nvidia/amd/intel)
+
     # Terminal tools
-    fastfetch           # Modern neofetch alternative (faster, prettier)
-    cava                # Audio visualizer
-    tty-clock           # Terminal clock
-    cmatrix             # Matrix effect in terminal
-    
+    fastfetch # Modern neofetch alternative (faster, prettier)
+    cava # Audio visualizer
+    tty-clock # Terminal clock
+    cmatrix # Matrix effect in terminal
+
     # Productivity
-    ulauncher           # Alternative app launcher with plugins
-    clipman             # Another clipboard manager option
-    
+    ulauncher # Alternative app launcher with plugins
+    clipman # Another clipboard manager option
+
     # File previews in terminal
-    ranger              # Terminal file manager with preview
-    ueberzugpp          # Image preview in terminal
-    
+    ranger # Terminal file manager with preview
+    ueberzugpp # Image preview in terminal
+
     # Fonts for icons and better looks
-    font-awesome        # Icon font
-    nerd-fonts.jetbrains-mono  # JetBrains Mono Nerd Font (used in terminal and UI)
-    nerd-fonts.symbols-only    # Just the icon glyphs
+    font-awesome # Icon font
+    nerd-fonts.jetbrains-mono # JetBrains Mono Nerd Font (used in terminal and UI)
+    nerd-fonts.symbols-only # Just the icon glyphs
 
     # Other utilities
     feh
@@ -74,8 +73,9 @@
     brightnessctl
     networkmanagerapplet
     # Signal + exporter
-	signal-desktop
-	sigtop    
+    signal-desktop
+    sigtop
+
     # Applications
     brave # Browser
     obsidian # Note taking
@@ -83,24 +83,20 @@
     slack
     vscode-fhs
     foxglove-studio
-    zoom-us    
-    # 3D printing
-    bambu-studio  # Bambu Lab slicer with GUI
+    zoom-us
 
     # Image editors
-    gimp          # Full-featured image editor (like Photoshop)
-    krita         # Digital painting and drawing
+    gimp # Full-featured image editor (like Photoshop)
+    krita # Digital painting and drawing
     # pinta       # Simple paint program (like MS Paint) - uncomment if you prefer something simpler
 
     # Office suite
-    libreoffice-qt-fresh  # LibreOffice with Qt frontend
+    libreoffice-qt # LibreOffice with Qt frontend
 
     # AI slop
     claude-code
     mcp-nixos
 
   ];
-  
-  # Import Hyprland config
-  imports = [ ./hyprland/hyprland.nix ];
+  # NB: hyprland/hyprland.nix is imported by modules/home.nix, not here.
 }
