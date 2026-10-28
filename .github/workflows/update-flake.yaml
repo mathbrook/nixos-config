@@ -1,0 +1,32 @@
+name: Update flake inputs
+
+# Opens a PR with a refreshed flake.lock every Monday morning, so input
+# bumps land as a reviewable diff that CI has already built, rather than
+# as a surprise during a local `nixos-rebuild`.
+on:
+  schedule:
+    - cron: "0 9 * * 1" # Mondays, 09:00 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: cachix/install-nix-action@v31
+        with:
+          extra_nix_config: |
+            experimental-features = nix-command flakes
+
+      - name: Update flake.lock and open PR
+        uses: DeterminateSystems/update-flake-lock@v27
+        with:
+          pr-title: "flake.lock: bump inputs"
+          pr-labels: dependencies
+          branch: automated/flake-update
+          commit-msg: "flake.lock: bump inputs"
