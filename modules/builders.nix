@@ -17,7 +17,14 @@
       hostName = "ubuntu-matty";
       system = "aarch64-linux";
       sshUser = "ubuntu";
-      sshKey = "/root/.ssh/nixremote";
+      # Prefer the sops-managed key when the host imports modules/secrets.nix
+      # (laptop); fall back to the hand-placed path on hosts that don't
+      # (chonker), so this module stays usable on both.
+      sshKey =
+        if (config ? sops) && (config.sops.secrets ? "nixremote/key") then
+          config.sops.secrets."nixremote/key".path
+        else
+          "/root/.ssh/nixremote";
       maxJobs = 7;
       # protocol = "ssh-ng";
       supportedFeatures = [ "big-parallel" ];
