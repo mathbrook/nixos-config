@@ -1,0 +1,33 @@
+# sops creation rules: which age recipients can decrypt which secret files.
+#
+# Recipients are age keys *derived from existing ed25519 SSH keys* via
+# `ssh-to-age`, so there is no extra private key to back up:
+#
+#   matty   <- ~/.ssh/id_ed25519            (lets you edit secrets)
+#   laptop  <- /etc/ssh/ssh_host_ed25519_key (lets the machine decrypt at boot)
+#
+# Regenerate a recipient with:
+#   nix run nixpkgs#ssh-to-age -- -i <path-to-public-key>
+#
+# After changing recipients below, re-encrypt existing files so the new
+# recipient can actually read them:
+#   nix run nixpkgs#sops -- updatekeys secrets/laptop.yaml
+
+keys:
+  - &matty age13yhnvp747ag9n4mff46cuh2tc76cqhmsr6r0s48tlqvckz6m54lqhtpjzd
+  - &laptop age1y0jxdhkp53xmm9860t9kjrvjj4x7czrsg08qyehunfh3dqc5kvgq92stq9
+
+creation_rules:
+  # Per-host secrets. Only that host (plus you) can decrypt.
+  - path_regex: secrets/laptop\.yaml$
+    key_groups:
+      - age:
+          - *matty
+          - *laptop
+
+  # Secrets shared by every host. Add new host recipients here as they appear.
+  - path_regex: secrets/common\.yaml$
+    key_groups:
+      - age:
+          - *matty
+          - *laptop

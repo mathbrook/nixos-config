@@ -1,0 +1,11 @@
+result
+result-*
+
+# Local Claude Code settings (machine-specific, not shared)
+.claude/settings.local.json
+
+# Never commit decrypted secrets. Encrypted secrets/*.yaml ARE committed;
+# these are the plaintext forms sops may leave behind.
+*.dec
+*.decrypted
+*.plain.yaml
